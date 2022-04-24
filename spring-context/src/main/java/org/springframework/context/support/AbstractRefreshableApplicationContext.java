@@ -124,6 +124,13 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
+			// 创建DefaultListableBeanFactory XmlBeanFactory继承了DefaultListableBeanFactory 并且提供了reader属性
+			// 也就是说DefaultListableBeanFactory是容器的基础，必须先实例化
+			// 步骤：
+			// 1、制定序列化id
+			// 2、定制化beanFactory
+			// 3、加载beanDefinition
+			// 4、使用全局变量记录beanFactory类实例
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
@@ -212,12 +219,17 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @see DefaultListableBeanFactory#setAllowEagerClassLoading
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
+		// 这个方法已经开始对beanFactory进行扩展
+		// 是否允许同名称的不同定义的对象
 		if (this.allowBeanDefinitionOverriding != null) {
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
+		// 是否允许bean之间存在循环依赖
 		if (this.allowCircularReferences != null) {
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}
+		// 在这之前，目前没有对这两个注解的支持了在这里
+		// 在基本容器的基础上，增加了是否覆盖是否允许扩展的设置，并提供了@Qualifier和@AutoWire的支持
 	}
 
 	/**
