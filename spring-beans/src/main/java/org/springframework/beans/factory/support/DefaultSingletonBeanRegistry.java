@@ -135,10 +135,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param singletonObject the singleton object
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
+		// 线程安全的
 		synchronized (this.singletonObjects) {
+			// 放入一级缓存
 			this.singletonObjects.put(beanName, singletonObject);
+			// 移除三级缓存
 			this.singletonFactories.remove(beanName);
+			// 移除二级缓存
 			this.earlySingletonObjects.remove(beanName);
+			// 已注册的map中把新初始化的bean放入
 			this.registeredSingletons.add(beanName);
 		}
 	}
@@ -178,8 +183,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+		// 这个方法很重要
+		// 一级缓存：SingletonObjects 可以理解为IOC容器，但是不是真正意义上的IOC容器，IOC容器其实包含三级缓存
+		// 一级缓存存放的都是单例的spring bean
+		// 二级缓存：SingletonFactories，提前曝光ObjectFactory，解决循环依赖的关键
+		// 三级缓存：earlySingletonObjects 存放的是ObjectFactory.getObject()，目的是为了提高效率的。
+		// 不然每次都从ObjectFactory中获取对象，无法保证获取到的是否是单例的，并且二级缓存还有一个关键点就是可以扩展和代理
 		// Quick check for existing instance without full singleton lock
 		Object singletonObject = this.singletonObjects.get(beanName);
+		// 解决循环依赖的另一个关键点就是这个是否在创建中的判断
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
@@ -231,6 +243,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 在这里调用外出的createBean返回的就是springbean，然后后续执行缓存的相关操作
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}

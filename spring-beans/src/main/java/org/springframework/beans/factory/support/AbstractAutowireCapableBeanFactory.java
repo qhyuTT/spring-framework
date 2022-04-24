@@ -539,10 +539,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
+			// 在spring中，基本上做事情的方法都是do开头的，前人的经验
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
 			}
+			// 这个方法返回object，可以只关注renturn，小技巧
 			return beanInstance;
 		}
 		catch (BeanCreationException | ImplicitlyAppearedSingletonException ex) {
@@ -611,13 +613,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			// 提前曝光，解决循环依赖的关键
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			// 属性注入
 			populateBean(beanName, mbd, instanceWrapper);
+			// 初始化的后续，postConstruct等等
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
