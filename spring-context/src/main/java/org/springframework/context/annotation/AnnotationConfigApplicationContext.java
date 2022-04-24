@@ -88,6 +88,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * {@link Configuration @Configuration} classes
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
+		// 以前的源码我记得有一个allowCircleRefrence(true)允许循环依赖的东西，现在不开放了？
 		this();
 		register(componentClasses);
 		refresh();
