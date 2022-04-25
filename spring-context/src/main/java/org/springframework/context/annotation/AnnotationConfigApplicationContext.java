@@ -89,6 +89,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		// 以前的源码我记得有一个allowCircleRefrence(true)允许循环依赖的东西，现在不开放了？
+		// this方法用来reader，读取definition
 		this();
 		// 这里我手动加的，之前的版本是有的，现在移除了，不影响
 		setAllowCircularReferences(true);

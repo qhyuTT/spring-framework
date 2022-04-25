@@ -569,7 +569,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
 				// beandefinition在这里面放入的DefaultListableBeanFactory的beanDefinitionMap中的？？这个问题存疑，20220424记录没来的确认
-				// 在这个方法里利用BeandefinitionRegistryPostProcessor个容器中再额外的添加一些组件
+				// 在这个方法里利用BeandefinitionRegistryPostProcessor  容器中再额外的添加一些组件
 				// 我们自己动态的注入bean也可以使用这个玩意
 				// 激活各种BeanFactory处理器
 				invokeBeanFactoryPostProcessors(beanFactory);
@@ -838,6 +838,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 		}
 		else {
+			// 广播器的创建SimpleApplicationEventMulticaster
 			this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
 			beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);
 			if (logger.isTraceEnabled()) {
