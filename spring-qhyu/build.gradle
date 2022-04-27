@@ -6,10 +6,13 @@ group 'org.springframework'
 version '5.3.20-SNAPSHOT'
 
 repositories {
+    maven{ url 'https://maven.aliyun.com/repository/public'}
     mavenCentral()
 }
 
 dependencies {
+    /*查看对象头*/
+    compileOnly("org.openjdk.jol:jol-core:0.10")
     /*aspectJ*/
     optional("org.aspectj:aspectjweaver")
     api(project(":spring-context"))
