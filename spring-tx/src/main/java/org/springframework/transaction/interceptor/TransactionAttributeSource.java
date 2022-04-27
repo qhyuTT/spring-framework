@@ -49,6 +49,7 @@ public interface TransactionAttributeSource {
 	 * implementation returns {@code true}, leading to regular introspection.
 	 * @since 5.2
 	 */
+	// 判断当前类是否需要事务增强
 	default boolean isCandidateClass(Class<?> targetClass) {
 		return true;
 	}
@@ -61,6 +62,7 @@ public interface TransactionAttributeSource {
 	 * in which case the declaring class of the method must be used)
 	 * @return the matching transaction attribute, or {@code null} if none found
 	 */
+	// 获取方法上面的事务属性，通过@Transactional配置的一些事务信息
 	@Nullable
 	TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass);
 

@@ -41,11 +41,14 @@ public class ProxyTransactionManagementConfiguration extends AbstractTransaction
 
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+	// 对切点进行增强，自然需要Advisor
 	public BeanFactoryTransactionAttributeSourceAdvisor transactionAdvisor(
 			TransactionAttributeSource transactionAttributeSource, TransactionInterceptor transactionInterceptor) {
-
+		// 实例化advisor对象
 		BeanFactoryTransactionAttributeSourceAdvisor advisor = new BeanFactoryTransactionAttributeSourceAdvisor();
+		// 引入第二个bean
 		advisor.setTransactionAttributeSource(transactionAttributeSource);
+		// 引入第三个bean
 		advisor.setAdvice(transactionInterceptor);
 		if (this.enableTx != null) {
 			advisor.setOrder(this.enableTx.<Integer>getNumber("order"));
@@ -53,12 +56,14 @@ public class ProxyTransactionManagementConfiguration extends AbstractTransaction
 		return advisor;
 	}
 
+	// 这个是管理事务属性的
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionAttributeSource transactionAttributeSource() {
 		return new AnnotationTransactionAttributeSource();
 	}
 
+	// Advisor需要的拦截器
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public TransactionInterceptor transactionInterceptor(TransactionAttributeSource transactionAttributeSource) {

@@ -114,12 +114,15 @@ public abstract class AopConfigUtils {
 		}
 	}
 
+	// cls=InfrastructureAdvisorAutoProxyCreator.class
 	@Nullable
 	private static BeanDefinition registerOrEscalateApcAsRequired(
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
-
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
-
+		//AUTO_PROXY_CREATOR_BEAN_NAME="org.springframework.aop.config.internalAutoProxyCreator";
+		// 20220426以下我记录的是事务相关的信息
+		// AOP的开启也会进入下面的逻辑，而名称都是AUTO_PROXY_CREATOR_BEAN_NAME，所以只会注册一个，选择哪个估计要看order
+		// BeanDefinitionRegistry可以拿到所有的BeanDefinition
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {

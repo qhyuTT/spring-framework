@@ -35,6 +35,7 @@ import org.springframework.util.ClassUtils;
  * @see TransactionManagementConfigUtils#TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  * @see TransactionManagementConfigUtils#JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  */
+// 实现了ImportSelector进行导入
 public class TransactionManagementConfigurationSelector extends AdviceModeImportSelector<EnableTransactionManagement> {
 
 	/**
@@ -45,8 +46,10 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 	 */
 	@Override
 	protected String[] selectImports(AdviceMode adviceMode) {
+		// @EnableTransactionaManagement注解默认就是Proxy
 		switch (adviceMode) {
 			case PROXY:
+				// 然后就要把这个数组里的类进行加载，到此为止@EnableTransactionManagement注解的事情也就完成了
 				return new String[] {AutoProxyRegistrar.class.getName(),
 						ProxyTransactionManagementConfiguration.class.getName()};
 			case ASPECTJ:

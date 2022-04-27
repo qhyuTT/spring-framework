@@ -159,7 +159,9 @@ import org.springframework.core.Ordered;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+// 使用@import注解导入了一个类
 @Import(TransactionManagementConfigurationSelector.class)
+// 代表开启事务，然后在方法上加上@Transactional注解就实现了对这个方法的增强
 public @interface EnableTransactionManagement {
 
 	/**

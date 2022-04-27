@@ -36,6 +36,7 @@ import org.springframework.core.type.AnnotationMetadata;
  * @see org.springframework.cache.annotation.EnableCaching
  * @see org.springframework.transaction.annotation.EnableTransactionManagement
  */
+// 实现ImportBeanDefinitionRegistrar 把类加载到容器中，与implements importSelector和@import不同的是，他可以不是全限定类名
 public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 
 	private final Log logger = LogFactory.getLog(getClass());

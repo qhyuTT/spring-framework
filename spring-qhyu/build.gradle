@@ -10,8 +10,11 @@ repositories {
 }
 
 dependencies {
+    /*aspectJ*/
     optional("org.aspectj:aspectjweaver")
     api(project(":spring-context"))
+    /*添加事务*/
+    api(project(":spring-tx"))
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
