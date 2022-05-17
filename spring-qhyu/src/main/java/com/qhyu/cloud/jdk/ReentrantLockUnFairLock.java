@@ -22,6 +22,5 @@ public class ReentrantLockUnFairLock {
 		}finally {
 			reentrantLock.unlock();
 		}
-
 	}
 }
