@@ -37,6 +37,7 @@ public class DynamicProxyServiceBeanRegister implements BeanDefinitionRegistryPo
 		// 根据建造者获取bean的定义器，也就是BeanDefinition
 		GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
 		// 拿到这个类的构造函数里面的参数信息，就是为了确认类型一致
+		// 指定构造方法得参数
 		definition.getConstructorArgumentValues().addGenericArgumentValue(target.getType());
 		//定义@Autowired的装配方式，这里用默认装配方式即可
 		// definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
