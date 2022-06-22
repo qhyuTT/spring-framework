@@ -80,7 +80,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 * @return the list of {@link org.springframework.aop.Advisor} beans
 	 * @see #isEligibleBean
 	 */
-	public List<Advisor> buildAspectJAdvisors() {
+	public List<Advisor>  buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
 
 		if (aspectNames == null) {
