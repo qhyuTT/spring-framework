@@ -116,7 +116,10 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public class DataSourceTransactionManager extends AbstractPlatformTransactionManager
 		implements ResourceTransactionManager, InitializingBean {
-
+	 /**
+	  * 首先我门都知道事务的提交和回滚都是依赖数据库连接的，但是数据库连接又是DataSource管理的
+	  * 所以DataSourceTransactionManager也需要依赖DataSource
+	  */
 	@Nullable
 	private DataSource dataSource;
 
@@ -129,6 +132,8 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	 * @see #setDataSource
 	 */
 	public DataSourceTransactionManager() {
+		// 设置允许NESTED类型的事务传播方式
+		// NESTED 外部不存在事务开启新的事务，外部存在事务融合到外部事务中，外层回滚会影响内层事务，但是内部事务回滚不会影响外部。
 		setNestedTransactionAllowed(true);
 	}
 
@@ -137,7 +142,9 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	 * @param dataSource the JDBC DataSource to manage transactions for
 	 */
 	public DataSourceTransactionManager(DataSource dataSource) {
+		// 调用无参的构造方法
 		this();
+		// 设置数据源
 		setDataSource(dataSource);
 		afterPropertiesSet();
 	}

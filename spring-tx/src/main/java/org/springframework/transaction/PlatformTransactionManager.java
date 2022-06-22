@@ -43,8 +43,9 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
  * @see org.springframework.transaction.ReactiveTransactionManager
  */
+// 事务管理器(事务管理平台)
 public interface PlatformTransactionManager extends TransactionManager {
-
+	// 这个接口提供了三个接口方法，分别是获取事务，提交事务，回滚事务。相当于是提出了事务管理器的规范，具体怎么实现，右实现类来完成
 	/**
 	 * Return a currently active transaction or create a new one, according to
 	 * the specified propagation behavior.
@@ -68,6 +69,8 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * @see TransactionDefinition#getTimeout
 	 * @see TransactionDefinition#isReadOnly
 	 */
+	// 获取事务
+	// 参数里面存放的是事务隔离级别isolation propagation和传播机制、超时时间
 	TransactionStatus getTransaction(@Nullable TransactionDefinition definition)
 			throws TransactionException;
 
@@ -98,6 +101,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * is already completed (that is, committed or rolled back)
 	 * @see TransactionStatus#setRollbackOnly
 	 */
+	// 提交事务，参数里保存的事务的状态，在不同时刻有不同的状态
 	void commit(TransactionStatus status) throws TransactionException;
 
 	/**
@@ -116,6 +120,7 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * @throws IllegalTransactionStateException if the given transaction
 	 * is already completed (that is, committed or rolled back)
 	 */
+	// 回滚事务
 	void rollback(TransactionStatus status) throws TransactionException;
 
 }
