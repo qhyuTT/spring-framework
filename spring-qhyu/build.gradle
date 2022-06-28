@@ -11,11 +11,14 @@ repositories {
 }
 
 dependencies {
+    implementation("com.alibaba:druid:1.1.21")
+    implementation("mysql:mysql-connector-java:8.0.20")
     /*查看对象头*/
     compileOnly("org.openjdk.jol:jol-core:0.10")
     /*aspectJ*/
     optional("org.aspectj:aspectjweaver")
     api(project(":spring-context"))
+    api(project(":spring-jdbc"))
     /*添加事务*/
     api(project(":spring-tx"))
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'

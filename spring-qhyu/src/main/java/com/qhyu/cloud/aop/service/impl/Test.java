@@ -11,7 +11,7 @@ public class Test {
 	@Autowired
 	PrintlnMethodArgs printlnMethodArgs;
 	public Test() {
-		System.out.println("test 开始我们的源码了");
+	//	System.out.println("test 开始我们的源码了");
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})

@@ -55,6 +55,7 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	 * 3、在创建bean的过程中，遍历advisor数组，跟当前创建的bean进行匹配
 	 * 4、如果匹配成功，说明当前对象需要被代理。根据被代理对象和advisor数组来生成代理对象
 	 */
+
 	@Nullable
 	private List<Pattern> includePatterns;
 
