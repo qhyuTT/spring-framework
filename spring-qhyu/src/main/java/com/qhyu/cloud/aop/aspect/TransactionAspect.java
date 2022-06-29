@@ -39,6 +39,7 @@ public class TransactionAspect {
 		Object proceed = null;
 		System.out.println("调用目标方法前:@Around");
 		try {
+			// aop拦截器
 			 proceed = pjp.proceed();
 		} catch (Throwable e) {
 			e.printStackTrace();

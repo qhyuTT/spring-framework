@@ -291,6 +291,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			//根据给定的bean的class和name构建出一个key，格式beanclassName_beanName
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
+				// 真正进行处理的地方，里面有代码很明显是用来创建代理对象的
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
 		}
@@ -340,9 +341,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		// Create proxy if we have advice.
 		// 正在创建代理的地方getAdvicesAndAdvisorsForBean
+		/**
+		 * 在里面根据我们的切面配置，获取对应的通知器
+		 * 我们再切面中配置了around通知，也就是TransactionAspect切面里面的
+		 * 同时这里还有一个默认的拦截器以及一个事务通知器，因为我们加了@transaction
+		 * */
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
+			// 创建代理对象
 			Object proxy = createProxy(
 					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
@@ -464,11 +471,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			}
 		}
 
+		// 设置通知信息
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
 		proxyFactory.addAdvisors(advisors);
 		proxyFactory.setTargetSource(targetSource);
 		customizeProxyFactory(proxyFactory);
 
+		// 设置了frozen属性，表示暂时不能修改配置了。
 		proxyFactory.setFrozen(this.freezeProxy);
 		if (advisorsPreFiltered()) {
 			proxyFactory.setPreFiltered(true);
@@ -479,6 +488,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (classLoader instanceof SmartClassLoader && classLoader != beanClass.getClassLoader()) {
 			classLoader = ((SmartClassLoader) classLoader).getOriginalClassLoader();
 		}
+		// 通过proxyFactory获取代理对象
 		return proxyFactory.getProxy(classLoader);
 	}
 

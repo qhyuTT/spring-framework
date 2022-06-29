@@ -55,10 +55,11 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 		// but we need to preserve order in the ultimate list.
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 		Advisor[] advisors = config.getAdvisors();
+		// org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor: advice org.springframework.transaction.interceptor.TransactionInterceptor@5669c5fb
+		// InstantiationModelAwarePointcutAdvisor: expression [transactionLogInfo()]; advice method [public java.lang.Object com.qhyu.cloud.aop.aspect.TransactionAspect.around(org.aspectj.lang.ProceedingJoinPoint)]; perClauseKind=SINGLETON
 		List<Object> interceptorList = new ArrayList<>(advisors.length);
 		Class<?> actualClass = (targetClass != null ? targetClass : method.getDeclaringClass());
 		Boolean hasIntroductions = null;
-
 		for (Advisor advisor : advisors) {
 			if (advisor instanceof PointcutAdvisor) {
 				// Add it conditionally.
@@ -75,7 +76,9 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 					else {
 						match = mm.matches(method, actualClass);
 					}
+					// 判断当前的方法是否和pointCut的execution匹配
 					if (match) {
+						// 确认需要拦截就吧advisor转为interceptor
 						MethodInterceptor[] interceptors = registry.getInterceptors(advisor);
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
