@@ -107,6 +107,10 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	}
 
 
+	/**
+	 * TransactionInterceptor在Spring源码深度解析中的名称叫做事务增强器，通俗点我喜欢叫他事务拦截器
+	 * TransactiinInterceptor支撑整个事务功能的框架，invoke方法为开始方法
+	 */
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -120,6 +124,7 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 			@Override
 			@Nullable
 			public Object proceedWithInvocation() throws Throwable {
+				// 执行被拦截的方法，也就是加了@transaction注解的方法
 				return invocation.proceed();
 			}
 			@Override
