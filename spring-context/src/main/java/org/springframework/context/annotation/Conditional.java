@@ -64,6 +64,7 @@ public @interface Conditional {
 	/**
 	 * All {@link Condition} classes that must {@linkplain Condition#matches match}
 	 * in order for the component to be registered.
+	 * 通过Conditional注解来控制bean是否需要注册，控制被@Configuration标注的配置类是否需要被解析
 	 */
 	Class<? extends Condition>[] value();
 

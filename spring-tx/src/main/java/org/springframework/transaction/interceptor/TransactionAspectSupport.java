@@ -358,7 +358,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		// 获取对应事务属性，对应事务是啥意思，打端点看一下
 		// 对应事务的属性就是rollbackrole，我们写的是Exception，还有默认的隔离级别和传播机制、还有执行的类的方法信息等
-
+		// 默认non-public的是无法使用@transaction注解的
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
 		// 获取beanFactory中的transactionManager 事务管理器
 		final TransactionManager tm = determineTransactionManager(txAttr);

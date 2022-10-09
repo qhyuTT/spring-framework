@@ -36,13 +36,16 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {
 
+	// 设置ClassFilter
 	protected TransactionAttributeSourcePointcut() {
 		setClassFilter(new TransactionAttributeSourceClassFilter());
 	}
 
 
+	// 判断方法是否为切点
 	@Override
 	public boolean matches(Method method, Class<?> targetClass) {
+		// 获取我们刚刚传入的TransactionAttributeSource
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		return (tas == null || tas.getTransactionAttribute(method, targetClass) != null);
 	}
