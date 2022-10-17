@@ -572,6 +572,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 在这个方法里利用BeandefinitionRegistryPostProcessor  容器中再额外的添加一些组件
 				// 我们自己动态的注入bean也可以使用这个玩意
 				// 激活各种BeanFactory处理器
+				// 调用BeanFactroyPostProcessor后置处理起，在这一步完成class类的扫描，并且将class类抽象了bd，put到beanDefinitionMap集合中
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
@@ -771,6 +772,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		// 核心方法
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime

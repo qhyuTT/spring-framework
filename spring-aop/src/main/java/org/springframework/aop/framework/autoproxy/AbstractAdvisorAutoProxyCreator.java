@@ -97,6 +97,8 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		 * 创建代理主要包含两个过程
 		 * 1、获取增强方法或者增强器
 		 * 2、根据获取的增强进行代理
+		 *
+		 * 此处还设计到排序？
 		 */
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);

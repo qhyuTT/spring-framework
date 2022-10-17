@@ -56,6 +56,15 @@ final class PostProcessorRegistrationDelegate {
 	}
 
 
+	/**
+	 * 说明：
+	 * 1、在调用该方法前，spring内置了实现了bfpp接口的class已经被抽象成BeanDefinition(简称bd)存在了beanDefinitionMap集合中
+	 * 2、没有被抽象成bd的class类。不会存放在beanDefinitionMap中，也不会在次被调用
+	 * 3、程序员自定义的bfpp会在本方法内部完成扫描，class信息抽象成beanDefinition，然后存在放BeanDefinitionMap中。自定义的bfpp又可以分为两种。
+	 * 	  一重是通过@Component注解+实现bfpp接口实现，另一种是通过ConfigurableApplicationContext#addBeanFactoryPostProcessor这个api完成
+	 * 参数1：默认是DefualtListableBeanFactory.class，实现了BeandefinitionRegistry
+	 * 参数2：一般情况下为空。除非调用Spring容器的refresh方法之前调用api手动添加bfpp
+	 */
 	public static void invokeBeanFactoryPostProcessors(
 			ConfigurableListableBeanFactory beanFactory, List<BeanFactoryPostProcessor> beanFactoryPostProcessors) {
 
@@ -74,15 +83,22 @@ final class PostProcessorRegistrationDelegate {
 
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		// 如果有的话，首先调用 BeanDefinitionRegistryPostProcessors
+		// 存放处理完毕的bfpp名称
 		Set<String> processedBeans = new HashSet<>();
 
-		if (beanFactory instanceof BeanDefinitionRegistry) {
+		if (beanFactory instanceof BeanDefinitionRegistry) { // 因为默认传的beanFactory实现了BeanDefinitionRegistry接口，所以进入if的逻辑
+			//
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+
 			// regularPostProcessors记录通过硬编码方式注册的BeanFactoryPostProcessor类型的处理起
+			// 存放直接实现了BeanFactoryPostProcessor接口的实现类集合，bfpp的作用是可以定制化修改bd
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+
 			// registryProcessors记录通过硬编码方式注册是BeanDefinitionRegistryPostProcessor
+			// 存放直接实现了BeanDefinitionRegistryPostProcessor接口实现类的集合，brpp可以定制化修改bd
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
+			// 除非手动注入bfpp 否则这个for循环没有什么意义
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
@@ -101,6 +117,7 @@ final class PostProcessorRegistrationDelegate {
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
 			// currentRegistryProcessors记录通过配置方式注册的BeanDefinitionRegistryPostProcessor类型的处理器
+			// 用于存放当前即将执行BeanDefinitionRegistryPostProcessor实现类
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
@@ -163,8 +180,10 @@ final class PostProcessorRegistrationDelegate {
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}
 
+		/** =============下面就是处理BeanFactoryPostProcessor的实现类=============  */
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
+		// 获取bfpp接口实现类
 		String[] postProcessorNames =
 				beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);
 

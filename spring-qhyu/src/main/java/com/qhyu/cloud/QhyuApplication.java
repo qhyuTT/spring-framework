@@ -17,6 +17,6 @@ public class QhyuApplication {
 		TransactionService bean = annotationConfigApplicationContext.getBean(TransactionService.class);
 		// 事务回滚了吗
 		bean.doQuery("0008cce0-3c92-45ea-957f-4f6dd568a3e2");
-		bean.doUpdate("0008cce0-3c92-45ea-957f-4f6dd568a3e2",1);
+		bean.doUpdate("0008cce0-3c92-45ea-957f-4f6dd568a3e2",0);
 	}
 }
