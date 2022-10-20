@@ -201,7 +201,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			 * advice method [public java.lang.Object com.qhyu.cloud.aop.aspect.TransactionAspect.around(org.aspectj.lang.ProceedingJoinPoint)];
 			 * aspect name 'transactionAspect'
 			 */
-			// 根据方法获取拦截器
+			// 获取拦截器链，对于Spring AOP来说是获取到跟当前代理类匹配的所有advisor
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
@@ -215,9 +215,11 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			}
 			else {
 				// We need to create a method invocation...
+				// 构造一个方法启动器，保存拦截器链，切点方法，对象等信息。
 				MethodInvocation invocation =
 						new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
 				// Proceed to the joinpoint through the interceptor chain.
+				// 执行拦截器链
 				retVal = invocation.proceed();
 			}
 

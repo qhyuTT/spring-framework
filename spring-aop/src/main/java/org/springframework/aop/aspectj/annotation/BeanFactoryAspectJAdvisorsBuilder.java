@@ -81,6 +81,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 * @see #isEligibleBean
 	 */
 	public List<Advisor>  buildAspectJAdvisors() {
+		// 一开始为null。后面进入之后不会重复去走下面的if逻辑
 		List<String> aspectNames = this.aspectBeanNames;
 
 		if (aspectNames == null) {
@@ -93,6 +94,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
+						// 判断bean是否有资格进行切面解析，默认所有的bean都是符合条件的
 						if (!isEligibleBean(beanName)) {
 							continue;
 						}
@@ -105,9 +107,11 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 						//判断是否为Spring类型的@Aspect切面
 						if (this.advisorFactory.isAspect(beanType)) {
 							aspectNames.add(beanName);
+							// 组装切面的元数据
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
+							// PerClauseKind存放的是切面的类型
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
-								// 为单例的bean实现aspect的罗
+								// 为单例的bean实现aspect的逻辑
 								MetadataAwareAspectInstanceFactory factory =
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
 								// 获取当前切面的所有advisor

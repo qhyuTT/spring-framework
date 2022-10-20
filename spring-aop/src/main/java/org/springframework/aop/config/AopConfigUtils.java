@@ -56,10 +56,12 @@ public abstract class AopConfigUtils {
 	 */
 	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>(3);
 
+	// 静态代码块，由于beanName一样的情况，那么这三个class只会有一个加载？
 	static {
 		// Set up the escalation list...
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
+		// 我们发现这个class实现了bean的后置处理器，意味着可以在bean创建出来之后，对bean进行一些特殊的操作，看起来就是对bean进行增强
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
 	}
 
@@ -120,7 +122,7 @@ public abstract class AopConfigUtils {
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		//AUTO_PROXY_CREATOR_BEAN_NAME="org.springframework.aop.config.internalAutoProxyCreator";
-		// 20220426以下我记录的是事务相关的信息
+		// 20220426以下我记录的是事务相关的信息，是否代表aop和开启事务管理都会来这注册AnnotationAwareAspectsJAutoProxyCreator
 		// AOP的开启也会进入下面的逻辑，而名称都是AUTO_PROXY_CREATOR_BEAN_NAME，所以只会注册一个，选择哪个估计要看order
 		// BeanDefinitionRegistry可以拿到所有的BeanDefinition
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {

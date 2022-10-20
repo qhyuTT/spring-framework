@@ -92,7 +92,11 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 				new BeanFactoryAspectJAdvisorsBuilderAdapter(beanFactory, this.aspectJAdvisorFactory);
 	}
 
-
+	/**
+	 * Advisor Aspect pointcut 这些是啥？
+	 * 是不是把我们写的Aspect类解析，将所有的通知组装成Advisor，然后访问的时候通过pointCut来判断这个类需不需要走Advisor
+	 * 什么时候会调用这个玩意？当然是增强的时候，也就是BeanPostProcessor的postProcessAfterInstantiation方法
+	 */
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
