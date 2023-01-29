@@ -7,6 +7,7 @@ version '5.3.20-SNAPSHOT'
 
 repositories {
     maven{ url 'https://maven.aliyun.com/repository/public'}
+    mavenLocal()
     mavenCentral()
 }
 

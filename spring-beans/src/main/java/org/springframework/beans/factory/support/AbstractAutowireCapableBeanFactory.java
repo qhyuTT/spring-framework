@@ -619,6 +619,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 			// 提前曝光，解决循环依赖的关键，
 			// 所有的bean都会提前曝光，存的都是objectFactory,如果这个类被代理会提前生成代理对象放入三级缓存
+			// 第三级缓存的目的是为了延迟代理对象的创建，因为如果没有循环依赖的话，那么就不需要为其提前创建代理，它可以将它延迟到初始化之后再创建
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 

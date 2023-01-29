@@ -92,7 +92,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		// this方法用来reader，读取definition
 		this();
 		// 这里我手动加的，之前的版本是有的，现在移除了，不影响
-		//setAllowCircularReferences(true);
+		setAllowCircularReferences(true);
 		register(componentClasses);
 		refresh();
 	}
