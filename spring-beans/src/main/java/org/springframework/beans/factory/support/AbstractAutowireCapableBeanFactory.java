@@ -610,6 +610,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		// 也就是说在spring中所有得单例都会提前曝光到三级缓存中
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -620,9 +621,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 提前曝光，解决循环依赖的关键，
 			// 所有的bean都会提前曝光，存的都是objectFactory,如果这个类被代理会提前生成代理对象放入三级缓存
 			// 第三级缓存的目的是为了延迟代理对象的创建，因为如果没有循环依赖的话，那么就不需要为其提前创建代理，它可以将它延迟到初始化之后再创建
+			// 如果有aop或者事务得情况下，会产生代理对象，一般就是我们得service类
+			// 它实际上就是调用了后置处理器的getEarlyBeanReference，而真正实现了这个方法的后置处理器只有AbstractAutoProxyCreator，
+			// 与Aop相关，也就是说，在不考虑Aop的情况下，这个方法压根就和没调用似的。这里我们也能更加明确，三级缓存出现很大程度上也是为了更好处理代理对象。
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
-
+		/**
+		 * 即使没有循环依赖，也会将其添加到三级缓存中，而且是不得不添加到三级缓存中，因为到目前为止Spring也不能确定这个Bean有没有和别的bean
+		 * 产生循环依赖，因为这个方法在populateBean属性注入得方法前。
+		 *
+		 * 假设我们在这里直接使用二级缓存得话，那么意味着所有的Bean都要在这一步完成aop代理，这样做有必要？？
+		 * 当然是没有必要的，不仅没有必要，而且违背了Spring结合AOP跟Bean的生命周期设计!
+		 * Spring结合AOP跟Bean的生命周期本身就是通过AbstractAutoProxyCreator(AnnotationAwareAspectJAutoProxyCreator)这个后置处理器来完成的，在这个后置处理的
+		 * postProcessAfterInitialization方法中对初始化后的Bean完成AOP代理，如果出现了循环依赖，那没有办法，只有给Bean先创建代理，但是没有
+		 * 出现循环依赖的情况下，设计之初就是让bean在生命周期的最后一步完成代理而不是实例化之后就立马完成代理
+		 * */
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
@@ -994,6 +1007,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
+				// 获取早期bean得引用
 				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
 			}
 		}
