@@ -1,4 +1,4 @@
-package tx;
+package com.qhyu.cloud.tx;
 
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

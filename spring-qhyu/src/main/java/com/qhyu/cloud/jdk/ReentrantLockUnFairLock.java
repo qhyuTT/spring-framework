@@ -1,5 +1,8 @@
 package com.qhyu.cloud.jdk;
 
+import sun.misc.Unsafe;
+
+import java.lang.reflect.Field;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -13,6 +16,16 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version v1.0 <br>
  */
 public class ReentrantLockUnFairLock {
+	static Unsafe unsafe =null;
+	static {
+		try {
+			Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+			theUnsafe.setAccessible(true);
+			unsafe = (Unsafe)theUnsafe.get(null);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 	public static void main(String[] args) {
 		// 默认就是非公平锁
 		ReentrantLock reentrantLock = new ReentrantLock();
