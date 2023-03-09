@@ -12,13 +12,23 @@ package com.qhyu.cloud.leetcode;
  */
 public class LongestPalindrome {
 
-	public static String way1(String str, int left, int right) {
-		return process(str.toCharArray(), left, right);
+	public static String way1(String str, int index) {
+		char[] chars = str.toCharArray();
+		String text1 = "";
+		String text2 = "";
+		return process(str.toCharArray(), text1,text2,index, chars.length);
 	}
 
-	private static String process(char[] chars, int left, int right) {
-		// 假设开始结束都是0,left=0 right=0
-
+	private static String process(char[] chars, String text1,String text2 ,int left, int right) {
+		// 第一件事情，找边界，怎么结束
+		if(left == right ){
+			// 结束
+			return text1+chars[left]+text2;
+		}else if (left > right){
+			return  text1+text2;
+		}else{
+			// 要么left+1 要么right-1 要么left+1和right-1三种情况
+		}
 		return null;
 	}
 
