@@ -43,7 +43,7 @@ public class LongestPalindrome {
 	 * 由递归改动态规划,建立空间感之后还可以继续优化
 	 */
 	public static Integer longestPalindromeSubseq2(String s) {
-		if (s ==null || s.length()==0){
+		if (s == null || s.length() == 0) {
 			return 0;
 		}
 		char[] chars = s.toCharArray();
@@ -63,9 +63,9 @@ public class LongestPalindrome {
 				int p2 = dp[l][r - 1];
 				int p3 = chars[l] == chars[r] ? dp[l + 1][r - 1] + 2 : 0;
 				dp[l][r] = Math.max(p1, Math.max(p2, p3));*/
-				dp[l][r] = Math.max(dp[l + 1][r],dp[l][r - 1]);
-				if (chars[l] == chars[r]){
-					dp[l][r] = Math.max(dp[l][r],dp[l + 1][r - 1] + 2);
+				dp[l][r] = Math.max(dp[l + 1][r], dp[l][r - 1]);
+				if (chars[l] == chars[r]) {
+					dp[l][r] = Math.max(dp[l][r], dp[l + 1][r - 1] + 2);
 				}
 			}
 		}
@@ -77,57 +77,23 @@ public class LongestPalindrome {
 	 * 动态规划啥缓存的话，需要定义一个dp，例如 int[][] dp = new int[][];
 	 * left = 0~str.length()-1
 	 * right = 0~str.length()-1
+	 * https://leetcode.cn/problems/longest-palindromic-substring/?favorite=2cktkvj
 	 */
-
-
-
-	public static Integer way4(String str, int index) {
-		char[] chars = str.toCharArray();
-		int[] continuous = new int[chars.length];
-		return process4(str.toCharArray(), index, chars.length - 1, continuous);
+	public String longestPalindrome(String s) {
+		char[] chars = s.toCharArray();
+		return process4(s.toCharArray(), 0, chars.length - 1);
 	}
 
-	private static Integer process4(char[] chars, int left, int right, int[] continuous) {
-		if (left == right) {
-			return 1;
-		} else if (left + 1 == right) {
-			if (chars[left] == chars[right]) {
-				return 2;
-			}
-			return Integer.MIN_VALUE;
-		} else {
-			int p1 = 0;
-			if (chars[left] == chars[right]) {
-				if (left == 0 || continuous[left - 1] == 1) {
-					continuous[left] = 1;
-					p1 = process4(chars, left + 1, right - 1, continuous) + 2;
-				} else {
-					return Integer.MIN_VALUE;
-				}
-			}
-
-			int[] copy2 = new int[chars.length];
-			copy2[left] = 1;
-			int[] copy3 = new int[chars.length];
-			if (left != 0) {
-				copy3[left - 1] = 1;
-			}
-			int p2 = process4(chars, left + 1, right, copy2);
-			int p3 = process4(chars, left, right - 1, copy3);
-			// 遍历int，把是1的拿出来，再从chars中去拿对应的下标就完事了
-			return Math.max(p1, Math.max(p2, p3));
+	private static String process4(char[] chars, int left, int right) {
+		//要返回最长子串，子串和子序列的区别，子串连续。
+		// 定义basecase
+		if (chars.length < 2){
+			return chars.toString();
 		}
+		return null;
 	}
 
 	public static void main(String[] args) {
-		System.out.println(way4("eeeaaa", 0));
-		System.out.println(way4("xeeee", 0));
-		System.out.println(way4("eeeex", 0));
-		System.out.println(way4("xxweeeeeweeeee", 0));
-		System.out.println(way4("baba", 0));
-		System.out.println(way4("babab", 0));
-		System.out.println(way4("123456789qwerqwer", 0)); //  这个为啥返回2
-		System.out.println(way4("a12b3c43def2ghi1kpm", 0)); // 返回4？
 		System.out.println(longestPalindromeSubseq1("a12b3c43def2ghi1kpm")); // 返回7
 	}
 
