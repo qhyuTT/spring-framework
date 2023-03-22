@@ -27,6 +27,7 @@ public class TransactionAspect {
 	@Pointcut("execution(* com.qhyu.cloud.datasource.service.TransactionService.*(..))") // the pointcut expression
 	private void transactionLogInfo() {} // the pointcut signature
 
+	// 程序计数器、方法区、Java虚拟机栈（栈帧：局部变量表 操作数栈 方法出口 动态链接）、本地方法栈、堆
 
 	/**
 	 * Title：around <br>

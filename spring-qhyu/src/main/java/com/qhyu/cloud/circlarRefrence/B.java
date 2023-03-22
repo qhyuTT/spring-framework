@@ -14,8 +14,13 @@ import org.springframework.stereotype.Service;
  * @version v1.0 <br>
  */
 @Service
-public class B {
+public class B implements BInterface{
 
 	@Autowired
 	private A a;
+
+	@Override
+	public void methodB() {
+		a.methodA();
+	}
 }

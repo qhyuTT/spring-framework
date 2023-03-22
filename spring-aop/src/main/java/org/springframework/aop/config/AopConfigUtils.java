@@ -128,6 +128,11 @@ public abstract class AopConfigUtils {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
+				// currentPriority 当前注入进来的class处于什么位置
+				//APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class); 0
+				//APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class); 1
+				//APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class); 2
+				// 也就是说底下的可以覆盖上面的
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
 				if (currentPriority < requiredPriority) {

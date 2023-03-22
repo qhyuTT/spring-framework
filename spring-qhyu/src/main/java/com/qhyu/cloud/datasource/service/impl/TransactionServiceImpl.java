@@ -27,7 +27,7 @@ public class TransactionServiceImpl implements TransactionService {
 		System.out.println(transactionDao.UserQuery(id));
 	}
 
-	//@Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
 	@Override
 	public void doUpdate(String id,int flag) {
 		int i = transactionDao.UserUpdate(id, flag);

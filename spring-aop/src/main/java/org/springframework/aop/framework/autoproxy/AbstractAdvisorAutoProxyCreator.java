@@ -99,6 +99,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		 * 2、根据获取的增强进行代理
 		 *
 		 * 此处还设计到排序？
+		 * findEligibleAdvisors 方法的作用是从所有可用的 Advisor 中筛选出适用于当前目标 bean 的 Advisor，并以优先级顺序返回这些 Advisor 对象的列表
 		 */
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);

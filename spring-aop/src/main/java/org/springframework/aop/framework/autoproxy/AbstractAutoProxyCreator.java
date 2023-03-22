@@ -328,6 +328,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @param cacheKey the cache key for metadata access
 	 * @return a proxy wrapping the bean, or the raw bean instance as-is
 	 */
+	/**
+	 * wrapIfNecessary方法的实现流程
+	 * 1、首先判断bean是否需要被代理，如果不需要，直接返回原始bean实例
+	 * 2、如果需要代理，则获取bean所有的advisor，并根据advisor的pointcout对bean进行匹配，得导所有需要拦截的方法
+	 * 3、根据bean的类型和配置信息，决定使用哪种类型的代理对象，CGLIB或者JDK动态代理
+	 * 4、将advisor和代理对象绑定，并将代理对象返回
+	 * */
 	protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) {
 		// targetSource是干嘛得
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {

@@ -2,6 +2,7 @@ package com.qhyu.cloud.circlarRefrence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
@@ -14,8 +15,15 @@ import org.springframework.stereotype.Service;
  * @version v1.0 <br>
  */
 @Service
-public class A {
+//@Transactional(rollbackFor = Exception.class)
+// @EnableTransactionManagement(proxyTargetClass = true)
+public class A implements Ainterface{
 
+	// 基于jdk的动态代理
 	@Autowired
 	private B b;
+
+	@Override
+	public void methodA() {
+	}
 }

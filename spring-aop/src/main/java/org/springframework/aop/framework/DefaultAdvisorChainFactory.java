@@ -90,7 +90,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 							}
 						}
 						else {
-							interceptorList.addAll(Arrays.asList(interceptors));
+ 							interceptorList.addAll(Arrays.asList(interceptors));
 						}
 					}
 				}
