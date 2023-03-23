@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-@Order(value = Ordered.HIGHEST_PRECEDENCE+1)
+//@Order(value = Ordered.HIGHEST_PRECEDENCE+1)
 // 用来测试事务和aop同时存在的异常情况
 public class TransactionAspect {
 

@@ -202,6 +202,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			 * aspect name 'transactionAspect'
 			 */
 			// 获取拦截器链，对于Spring AOP来说是获取到跟当前代理类匹配的所有advisor
+			// 获取可以应用到此方法上的Interceptor 拦截器列表，并且排序
 			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 
 			// Check whether we have any advice. If we don't, we can fallback on direct
