@@ -569,10 +569,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 				// Invoke factory processors registered as beans in the context.
 				// beandefinition在这里面放入的DefaultListableBeanFactory的beanDefinitionMap中的？？这个问题存疑，20220424记录没来的确认
-				// 在这个方法里利用BeandefinitionRegistryPostProcessor  容器中再额外的添加一些组件
-				// 我们自己动态的注入bean也可以使用这个玩意
 				// 激活各种BeanFactory处理器
 				// 调用BeanFactroyPostProcessor后置处理起，在这一步完成class类的扫描，并且将class类抽象了bd，put到beanDefinitionMap集合中
+				// ImportBeanDefinitionRegistrar也能手动的注入beandefinition到BeanDefinitionRegistry里面去，在我的理解这一步骤只是BeanDefinitionRegistry放入要注入的bean定义信息
+				// BeanDefinitionRegistryPostProcessor是可以在postProcessBeanDefinitionRegistry中去拿到bean的定义信息进行修改
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.
