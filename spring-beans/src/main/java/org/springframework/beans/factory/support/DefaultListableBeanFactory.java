@@ -931,6 +931,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			// 通过bean的名称去获取bean的定义信息
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
 			// 默认的情况下bd.isAbstract() = false  bd.isSingleton() = true  bd.isLazyInit()=false
+			// LazyInit属性
 			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
 				// FactoryBean有自己的处理逻辑
 				if (isFactoryBean(beanName)) {

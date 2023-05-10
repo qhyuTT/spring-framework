@@ -14,6 +14,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @version v1.0 <br>
  */
 @EnableAspectJAutoProxy
-@ComponentScan("com.qhyu.cloud")
+@ComponentScan(value = {"com.qhyu.cloud.**"})
 public class AopConfig {
 }

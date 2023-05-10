@@ -1,6 +1,7 @@
 package com.qhyu.cloud.circlarRefrence;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
  * date 2022年 10月17日 11:27 <br>
  * @version v1.0 <br>
  */
-@Service
+@Repository
 public class B implements BInterface{
 
 	@Autowired

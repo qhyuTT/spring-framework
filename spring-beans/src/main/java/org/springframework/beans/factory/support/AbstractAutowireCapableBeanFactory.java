@@ -660,6 +660,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 				}
+				// 代理对象和二级缓存对象不一致的情况会报版本不一致的错误
 				else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
 					String[] dependentBeans = getDependentBeans(beanName);
 					Set<String> actualDependentBeans = new LinkedHashSet<>(dependentBeans.length);
@@ -1008,7 +1009,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
 				// 获取早期bean得引用
-				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
+          				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
 			}
 		}
 		return exposedObject;

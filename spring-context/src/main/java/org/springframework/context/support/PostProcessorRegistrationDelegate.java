@@ -86,7 +86,8 @@ final class PostProcessorRegistrationDelegate {
 		// 存放处理完毕的bfpp名称
 		Set<String> processedBeans = new HashSet<>();
 
-		if (beanFactory instanceof BeanDefinitionRegistry) { // 因为默认传的beanFactory实现了BeanDefinitionRegistry接口，所以进入if的逻辑
+		// 因为默认传的DefaultListableBeanFactory==beanFactory实现了BeanDefinitionRegistry接口，所以进入if的逻辑
+		if (beanFactory instanceof BeanDefinitionRegistry) {
 			//
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
@@ -98,7 +99,7 @@ final class PostProcessorRegistrationDelegate {
 			// 存放直接实现了BeanDefinitionRegistryPostProcessor接口实现类的集合，brpp可以定制化修改bd
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
-			// 除非手动注入bfpp 否则这个for循环没有什么意义
+			// 除非手动注入bfpp 否则这个for循环没有什么意义,也就是AnnotationConfigApplicationContext.addBeanFactoryPostProcessor
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
@@ -116,12 +117,14 @@ final class PostProcessorRegistrationDelegate {
 			// uninitialized to let the bean factory post-processors apply to them!
 			// Separate between BeanDefinitionRegistryPostProcessors that implement
 			// PriorityOrdered, Ordered, and the rest.
+
 			// currentRegistryProcessors记录通过配置方式注册的BeanDefinitionRegistryPostProcessor类型的处理器
 			// 用于存放当前即将执行BeanDefinitionRegistryPostProcessor实现类
 			List<BeanDefinitionRegistryPostProcessor> currentRegistryProcessors = new ArrayList<>();
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
-			// 首先调用实现了排序的BeanDefinitionRegistryPostProcessors
+			// 第一次调用：首先调用实现了排序的BeanDefinitionRegistryPostProcessors
+			// 这里这个方法多次调用返回不同的值是因为beanFactory中的BeanDefinitionRegistryPostProcessors的新增，一开始都想不明白，知道GPT告诉了我
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -132,11 +135,15 @@ final class PostProcessorRegistrationDelegate {
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
+			// 这个方法就是核心内容，我这个工程使用了AOPConfig启动类，也就是说一开始会解析这个类，包含类上的ComponentScan注解，会把路径下的东西用ClassPathBeanDefinitionScanner来扫描出来
+			// 生成beanDefinition放入BeanFactory(DefaultListableBeanFactory),所以第二次调用的时候就可以扫描出其他的BeanFactoryPostProcessors
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			// 接下来，调用实现 Ordered 的 BeanDefinitionRegistryPostProcessors。
+			// 第二次调用：这个时候已经获取了ComponentScan注解中的路径下的BeanDefinition了。
+			// 所以会把我们定义的BeanDefinitionRegistryPostProcessor加载起来
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
@@ -144,10 +151,11 @@ final class PostProcessorRegistrationDelegate {
 					processedBeans.add(ppName);
 				}
 			}
-			// 排序
+			// 排序,看一下排序的规则是什么？，我可以实现Ordered接口PriorityOrdered接口或者注解
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
 			// 调用了currentRegistryProcessors中的BeanDefinitionRegistryPostProcessors--》postProcessBeanDefinitionRegistry方法
+			// 因为BeanDefinitionRegistryPostProcessor的职责就是加载Bean的BeanDefinition，后续才好加载这个bean，至于要修改的话，交给BeanFactoryPostProcessor
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
 			currentRegistryProcessors.clear();
 
