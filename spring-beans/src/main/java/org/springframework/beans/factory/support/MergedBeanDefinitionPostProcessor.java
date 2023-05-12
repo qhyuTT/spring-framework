@@ -38,7 +38,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public interface MergedBeanDefinitionPostProcessor extends BeanPostProcessor {
 
 	/**
-	 * Post-process the given merged bean definition for the specified bean.
+	 * Post-process the given merged bean definition for the specified(指定的) bean.
 	 * @param beanDefinition the merged bean definition for the bean
 	 * @param beanType the actual type of the managed bean instance
 	 * @param beanName the name of the bean

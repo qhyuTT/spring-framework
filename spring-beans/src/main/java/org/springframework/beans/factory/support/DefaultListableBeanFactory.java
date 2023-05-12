@@ -1307,9 +1307,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
 		else {
+			// 属性填充如果是@lazy 就返回一个代理对象,里面自己封装了一个TargetSource.
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 					descriptor, requestingBeanName);
 			if (result == null) {
+				// 其他情况就走这里了,2023/5/12/15点33分,不想继续看里面的源码了.猜测核心就是去getBean
 				result = doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter);
 			}
 			return result;

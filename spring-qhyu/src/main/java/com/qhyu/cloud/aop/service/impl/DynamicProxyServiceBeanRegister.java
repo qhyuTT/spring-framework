@@ -8,7 +8,11 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Annotation;
 
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
@@ -22,7 +26,7 @@ import org.springframework.stereotype.Component;
  */
 //干预BeanDefinition
 @Component
-public class DynamicProxyServiceBeanRegister implements BeanDefinitionRegistryPostProcessor {
+public class DynamicProxyServiceBeanRegister implements BeanDefinitionRegistryPostProcessor, Ordered {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
@@ -45,5 +49,10 @@ public class DynamicProxyServiceBeanRegister implements BeanDefinitionRegistryPo
 		definition.setBeanClass(ProxyBeanFactory.class);
 		// 将别名也就是bean的名称和definition绑定
 		registry.registerBeanDefinition(target.getType().getSimpleName(), definition);
+	}
+
+	@Override
+	public int getOrder() {
+		return 101;
 	}
 }

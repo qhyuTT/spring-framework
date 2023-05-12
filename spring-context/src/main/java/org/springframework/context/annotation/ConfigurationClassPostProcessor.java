@@ -328,6 +328,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
 			StartupStep processConfig = this.applicationStartup.start("spring.context.config-classes.parse");
+			// 解析我们的配置类，我们使用AnnotationConfigApplicationContent启动的时候，使用的构造函数进行创建
+			// 也就是加入了@ComponentScan注解，需要根据里面的路径扫描包路径，从而找到所有需要被Spring管理的Bean的beanDefiniton信息
 			parser.parse(candidates);
 			parser.validate();
 

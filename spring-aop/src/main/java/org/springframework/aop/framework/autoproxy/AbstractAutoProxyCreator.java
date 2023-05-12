@@ -259,15 +259,24 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		// Create proxy here if we have a custom TargetSource.
-		// Suppresses unnecessary default instantiation of the target bean:
+		// Suppresses(抑制) unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
+		// 在这里创建一个代理对象，如果我们有一个自定义 TargetSource
+		// 抑制这个目标bean得默认初始化是没有必要得
+		// TargetSource将用自定义得方式处理目标实例
+
+		// 什么是TargetSource,在实操中怎么使用?
+		// 也就是说@lazy会被包装为LazyInitTargetSource?
+		// 获取自定义的TargetSource,根据beanName和beanclass,为什么我自定义了TargetSource并没有获取到?
+		// 在项目启动开始创建对象之前,我觉得这个逻辑是不会走的
 		TargetSource targetSource = getCustomTargetSource(beanClass, beanName);
 		if (targetSource != null) {
 			if (StringUtils.hasLength(beanName)) {
 				this.targetSourcedBeans.add(beanName);
 			}
+			// 这里好理解,就是获取到bean的所有advisors
 			Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);
-			// 通过targetSource创建一个代理对象
+			//为这个targetSource创建代理对象
 			Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
