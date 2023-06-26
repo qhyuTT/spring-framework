@@ -1478,6 +1478,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					if (filteredPds == null) {
 						filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
 					}
+					// 在这里面回去校验属性的版本信息（BeanNotOfRequiredTypeException）
+					/**
+					 *Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException:
+					 * Error creating bean with name 'b': Unsatisfied dependency expressed through field 'a';
+					 * nested exception is org.springframework.beans.factory.BeanNotOfRequiredTypeException:
+					 * Bean named 'a' is expected to be of type 'com.qhyu.cloud.circlarRefrence.A' but was actually of type 'com.sun.proxy.$Proxy34'
+					 */
 					pvsToUse = bp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
 					if (pvsToUse == null) {
 						return;

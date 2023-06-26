@@ -1401,6 +1401,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 				result = null;
 			}
+			// 检查类型和结果，因为我们属性填充的时候比如a中有b，我获取b的时候，如果存在循环依赖，那么b对象就是一个objectFactory，所有b.getObject
+			// 的时候可能会被提前代理，如果是jdk的动态代理，是实现Proxy接口，所以会改变类的类型，与之前的type不一致
 			if (!ClassUtils.isAssignableValue(type, result)) {
 				throw new BeanNotOfRequiredTypeException(autowiredBeanName, type, instanceCandidate.getClass());
 			}

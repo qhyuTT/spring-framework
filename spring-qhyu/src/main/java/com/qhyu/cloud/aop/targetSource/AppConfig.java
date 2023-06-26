@@ -35,10 +35,10 @@ public class AppConfig {
 		return new UserAccessControlInterceptor(Arrays.asList("admin", "manager"));
 	}
 
-	@Bean
+	/*@Bean
 	public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
 		return new DefaultAdvisorAutoProxyCreator();
-	}
+	}*/
 
 	@Bean
 	public Advisor userAccessControlAdvisor() {

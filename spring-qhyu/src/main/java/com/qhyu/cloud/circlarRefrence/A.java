@@ -2,9 +2,6 @@ package com.qhyu.cloud.circlarRefrence;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
