@@ -226,7 +226,7 @@ class ConfigurationClassParser {
 		if (this.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) {
 			return;
 		}
-
+		// 查看这个配置类是不是存在了，如果存在就走下面的if逻辑
 		ConfigurationClass existingClass = this.configurationClasses.get(configClass);
 		if (existingClass != null) {
 			if (configClass.isImported()) {
@@ -245,9 +245,12 @@ class ConfigurationClassParser {
 		}
 
 		// Recursively process the configuration class and its superclass hierarchy.
+		// 这里好像和ASM相关，现在不深究
 		SourceClass sourceClass = asSourceClass(configClass, filter);
+
+		// 此处使用了个do while
 		do {
-			// 查看源码就是习惯性的查看do something开头的
+			// 查看源码就是习惯性的查看do something开头的，至少spring是这样的一个习惯。
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass, filter);
 		}
 		while (sourceClass != null);
@@ -268,6 +271,7 @@ class ConfigurationClassParser {
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)
 			throws IOException {
 
+		// 如果这个候选配置类中有Component注解，走下面的逻辑
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first
 			processMemberClasses(configClass, sourceClass, filter);
@@ -287,12 +291,17 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @ComponentScan annotations
+		// 我们的AopConfig候选配置类就会走到下面这个逻辑
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
+		// componentScans不为空，第一个条件满足
+		// sourceClass.getMetadata()不为null；通过Conditional注解来控制bean是否需要注册，控制被@Configuration标注的配置类是否需要被解析 第二个条件false，取反。
 		if (!componentScans.isEmpty() &&
 				!this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
 			for (AnnotationAttributes componentScan : componentScans) {
 				// The config class is annotated with @ComponentScan -> perform the scan immediately
+				// 使用this.componentScanParser ComponentScanAnnotationParser来解析
+				// 这里面将会注册我们自己写的一些将被spring接管的类的BeanDefinition信息
 				Set<BeanDefinitionHolder> scannedBeanDefinitions =
 						this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());
 				// Check the set of scanned definitions for any further config classes and parse recursively if needed

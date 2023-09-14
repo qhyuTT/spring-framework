@@ -289,6 +289,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+					// 在这里就把我们需要spring管理的类组装BeanDefinition，放到了(BeanDefinitionRegistry)BeanFactory中
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}

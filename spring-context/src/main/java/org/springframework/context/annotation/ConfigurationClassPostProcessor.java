@@ -274,16 +274,30 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * {@link Configuration} classes.
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
+		//registry 也就是BeanFactory(ConfigurableListableBeanFactory)
+		// configCandidates Candidates候选人
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
+		// 当前BeanFacoty中存在的BeanDefinitonNames
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
 		for (String beanName : candidateNames) {
+			// 根据名称获取BeanDefinition
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
+			// 检测配置候选人的条件，此处为true才会加入配置候选人
+			// private static final Set<String> candidateIndicators = new HashSet<>(8);
+			//
+			//	static {
+			//		candidateIndicators.add(Component.class.getName());
+			//		candidateIndicators.add(ComponentScan.class.getName());
+			//		candidateIndicators.add(Import.class.getName());
+			//		candidateIndicators.add(ImportResource.class.getName());
+			//	}
+			// 也就是说只要包含这些也都是配置候选人
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
@@ -324,13 +338,17 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
 
+		// 这是候选人Set，去重
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
+		// 以及解析了的配置类
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
 			StartupStep processConfig = this.applicationStartup.start("spring.context.config-classes.parse");
 			// 解析我们的配置类，我们使用AnnotationConfigApplicationContent启动的时候，使用的构造函数进行创建
 			// 也就是加入了@ComponentScan注解，需要根据里面的路径扫描包路径，从而找到所有需要被Spring管理的Bean的beanDefiniton信息
+			// ConfigurationClassParser去解析我们的AopConfig类.这个类只会在启动的时候呗调用一次
 			parser.parse(candidates);
+			// 验证
 			parser.validate();
 
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
@@ -343,6 +361,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						this.importBeanNameGenerator, parser.getImportRegistry());
 			}
 			// ImportBeanDefinitionRegistrar扫描实现了这个接口的方法
+			// ConfigurationClassParser解析的在这里又读出来，这里需要打断点再观察一下。
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 			processConfig.tag("classCount", () -> String.valueOf(configClasses.size())).end();

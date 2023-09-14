@@ -115,6 +115,7 @@ class ComponentScanAnnotationParser {
 		for (Class<?> clazz : componentScan.getClassArray("basePackageClasses")) {
 			basePackages.add(ClassUtils.getPackageName(clazz));
 		}
+		// 如果没有写，将使用declaringClass，也就是AopConfig这个类的路径。这也是spring里面不写basePackages的原因，直接约定大于配置。
 		if (basePackages.isEmpty()) {
 			basePackages.add(ClassUtils.getPackageName(declaringClass));
 		}
@@ -125,6 +126,7 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		// 实际做事的地方就是去doScan
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 

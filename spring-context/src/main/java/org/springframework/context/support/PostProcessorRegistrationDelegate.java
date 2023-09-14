@@ -62,7 +62,7 @@ final class PostProcessorRegistrationDelegate {
 	 * 2、没有被抽象成bd的class类。不会存放在beanDefinitionMap中，也不会在次被调用
 	 * 3、程序员自定义的bfpp会在本方法内部完成扫描，class信息抽象成beanDefinition，然后存在放BeanDefinitionMap中。自定义的bfpp又可以分为两种。
 	 * 	  一重是通过@Component注解+实现bfpp接口实现，另一种是通过ConfigurableApplicationContext#addBeanFactoryPostProcessor这个api完成
-	 * 参数1：默认是DefualtListableBeanFactory.class，实现了BeandefinitionRegistry
+	 * 参数1：默认是DefaultListableBeanFactory，实现了BeanDefinitionRegistry
 	 * 参数2：一般情况下为空。除非调用Spring容器的refresh方法之前调用api手动添加bfpp
 	 */
 	public static void invokeBeanFactoryPostProcessors(
@@ -88,10 +88,10 @@ final class PostProcessorRegistrationDelegate {
 
 		// 因为默认传的DefaultListableBeanFactory==beanFactory实现了BeanDefinitionRegistry接口，所以进入if的逻辑
 		if (beanFactory instanceof BeanDefinitionRegistry) {
-			//
+			// 也就是说这个if里面要使用的就是BeanDefinitionRegistry的特性。
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-
-			// regularPostProcessors记录通过硬编码方式注册的BeanFactoryPostProcessor类型的处理起
+			// regular常规的意思
+			// regularPostProcessors记录通过硬编码方式注册的BeanFactoryPostProcessor类型的处理器
 			// 存放直接实现了BeanFactoryPostProcessor接口的实现类集合，bfpp的作用是可以定制化修改bd
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
 
@@ -100,11 +100,11 @@ final class PostProcessorRegistrationDelegate {
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
 			// 除非手动注入bfpp 否则这个for循环没有什么意义,也就是AnnotationConfigApplicationContext.addBeanFactoryPostProcessor
+			// 此处可以作为扩展。AnnotationConfigApplicationContext.addBeanFactoryPostProcessor
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
-					// 对于BeanDefinitionRegistryPostProcessor类型，
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
@@ -124,7 +124,11 @@ final class PostProcessorRegistrationDelegate {
 
 			// First, invoke the BeanDefinitionRegistryPostProcessors that implement PriorityOrdered.
 			// 第一次调用：首先调用实现了排序的BeanDefinitionRegistryPostProcessors
-			// 这里这个方法多次调用返回不同的值是因为beanFactory中的BeanDefinitionRegistryPostProcessors的新增，一开始都想不明白，知道GPT告诉了我
+
+			// 这里这个方法多次调用返回不同的值是因为beanFactory中的BeanDefinitionRegistryPostProcessors的新增，一开始都想不明白。
+			// 其实最主要的就是第一次执行了invokeBeanDefinitionRegistryPostProcessor方法
+			// 真实逻辑就是ConfigurationClassPostProcessor的postProcessBeanDefinitionRegistry方法，
+			// 这里会根据我们的AopConfig，也就是@ComponentScan注解的path来扫描我们自己的类，并且生产BeanDefiniton信息
 			String[] postProcessorNames =
 					beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
@@ -133,11 +137,15 @@ final class PostProcessorRegistrationDelegate {
 					processedBeans.add(ppName);
 				}
 			}
+			// 很明显 这里是排序，先不进去看，因为此时currentRegistryProcessors只有一个ConfigurationClassPostProcessor
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
+
 			registryProcessors.addAll(currentRegistryProcessors);
 			// 这个方法就是核心内容，我这个工程使用了AOPConfig启动类，也就是说一开始会解析这个类，包含类上的ComponentScan注解，会把路径下的东西用ClassPathBeanDefinitionScanner来扫描出来
 			// 生成beanDefinition放入BeanFactory(DefaultListableBeanFactory),所以第二次调用的时候就可以扫描出其他的BeanFactoryPostProcessors
+			// ConfigurationClassPostProcessor ==  currentRegistryProcessors
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry, beanFactory.getApplicationStartup());
+			// 清空当前注册的BeanDefinitionRegistryPostProcessors
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
