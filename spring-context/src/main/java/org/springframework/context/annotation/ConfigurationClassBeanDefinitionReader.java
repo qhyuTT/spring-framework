@@ -153,7 +153,9 @@ class ConfigurationClassBeanDefinitionReader {
 			loadBeanDefinitionsForBeanMethod(beanMethod);
 		}
 
+		// @importResource
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		// @import才会进入逻辑
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 

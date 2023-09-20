@@ -18,6 +18,7 @@ package org.springframework.context.annotation;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -272,6 +273,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
+		AtomicInteger index = new AtomicInteger();
 		for (String basePackage : basePackages) {
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
@@ -290,10 +292,13 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
 					// 在这里就把我们需要spring管理的类组装BeanDefinition，放到了(BeanDefinitionRegistry)BeanFactory中
+					System.out.println("当前加载的beanName:"+beanName);
+					index.addAndGet(1);
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}
 		}
+		System.out.println("当前加载的所有beanName的个数为:"+ index);
 		return beanDefinitions;
 	}
 

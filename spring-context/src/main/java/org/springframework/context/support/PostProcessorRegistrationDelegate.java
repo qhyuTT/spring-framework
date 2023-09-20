@@ -88,7 +88,7 @@ final class PostProcessorRegistrationDelegate {
 
 		// 因为默认传的DefaultListableBeanFactory==beanFactory实现了BeanDefinitionRegistry接口，所以进入if的逻辑
 		if (beanFactory instanceof BeanDefinitionRegistry) {
-			// 也就是说这个if里面要使用的就是BeanDefinitionRegistry的特性。
+			// 也就是说这个if里面要使用的就是BeanDefinitionRegistry的特性。或者作为参数传递固定了类型。
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 			// regular常规的意思
 			// regularPostProcessors记录通过硬编码方式注册的BeanFactoryPostProcessor类型的处理器
@@ -151,7 +151,7 @@ final class PostProcessorRegistrationDelegate {
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
 			// 接下来，调用实现 Ordered 的 BeanDefinitionRegistryPostProcessors。
 			// 第二次调用：这个时候已经获取了ComponentScan注解中的路径下的BeanDefinition了。
-			// 所以会把我们定义的BeanDefinitionRegistryPostProcessor加载起来
+			// 所以会把我们定义的BeanDefinitionRegistryPostProcessor加载起来，或者第三方框架实现的BeanDefinitionRegistryPostProcessor加载起来
 			postProcessorNames = beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
 			for (String ppName : postProcessorNames) {
 				if (!processedBeans.contains(ppName) && beanFactory.isTypeMatch(ppName, Ordered.class)) {
@@ -169,6 +169,7 @@ final class PostProcessorRegistrationDelegate {
 
 			// Finally, invoke all other BeanDefinitionRegistryPostProcessors until no further ones appear.
 			// 最后，调用所有其他 BeanDefinitionRegistryPostProcessors 直到不再出现。
+			// 为什么会调用第三次，因为上面只处理了有有序的两个，接下来没有实现排序相关的就直接处理完。
 			boolean reiterate = true;
 			while (reiterate) {
 				reiterate = false;

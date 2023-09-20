@@ -85,17 +85,20 @@ abstract class ConfigurationClassUtils {
 	public static boolean checkConfigurationClassCandidate(
 			BeanDefinition beanDef, MetadataReaderFactory metadataReaderFactory) {
 
+		// 对beanClassName做非空验证
 		String className = beanDef.getBeanClassName();
 		if (className == null || beanDef.getFactoryMethodName() != null) {
 			return false;
 		}
 
 		AnnotationMetadata metadata;
+		// 当前BeanDefinition是ConfigurationClassPostProcessor
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
 			// Can reuse the pre-parsed metadata from the given BeanDefinition...
 			metadata = ((AnnotatedBeanDefinition) beanDef).getMetadata();
 		}
+		// beanDef RootBeanDefinition extends AbstractBeanDefinition
 		else if (beanDef instanceof AbstractBeanDefinition && ((AbstractBeanDefinition) beanDef).hasBeanClass()) {
 			// Check already loaded Class if present...
 			// since we possibly can't even load the class file for this Class.
