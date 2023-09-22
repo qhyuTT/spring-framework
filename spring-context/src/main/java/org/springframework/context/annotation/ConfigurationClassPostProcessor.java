@@ -334,6 +334,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Parse each @Configuration class
+		// 创建一个ConfigurationClassParser对象并进行初始化，该对象用于解析候选配置类
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
@@ -363,6 +364,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 			// ImportBeanDefinitionRegistrar扫描实现了这个接口的方法
 			// ConfigurationClassParser解析的在这里又读出来，这里需要打断点再观察一下。
+			// ConfigurationClassParser去解析我们的AopConfig类会将@import @importSource等存起来在这里load起来处理
 			this.reader.loadBeanDefinitions(configClasses);
 			alreadyParsed.addAll(configClasses);
 			processConfig.tag("classCount", () -> String.valueOf(configClasses.size())).end();
