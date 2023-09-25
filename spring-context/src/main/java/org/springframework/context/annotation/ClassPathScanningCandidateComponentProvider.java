@@ -312,10 +312,13 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @return a corresponding Set of autodetected bean definitions
 	 */
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
+		// 这个basePackage来源于注解类AopConfig
+		// componentsIndex不知道是什么，应该是一个扩展点，因为spring启动在这里打断点，此处为null
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
 		else {
+			// 默认走这里
 			return scanCandidateComponents(basePackage);
 		}
 	}
@@ -416,12 +419,16 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		return candidates;
 	}
 
+
 	private Set<BeanDefinition> scanCandidateComponents(String basePackage) {
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
+			// 根据basePackage组装包的搜索路径，当前是classpath*:com.qhyu.cloud.**/**/*.class
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
+			// 获取资源数据，就是具体到文件
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
+			// 所以我们平常的日志需要打开trace和debug日志，至少在开发过程中需要这么做
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
 			for (Resource resource : resources) {
@@ -429,7 +436,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 					logger.trace("Scanning " + resource);
 				}
 				try {
+					// 通过resource获取到元数据
 					MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+					// 通过元数据判断是不是候选component，所以此处是核心
+					// 此处用到了排除过滤器和包含过滤器
 					if (isCandidateComponent(metadataReader)) {
 						ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 						sbd.setSource(resource);

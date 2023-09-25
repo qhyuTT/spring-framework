@@ -262,6 +262,20 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		return (this.registry.getBeanDefinitionCount() - beanCountAtScanStart);
 	}
 
+
+	/**
+	 * 在指定的基础包中执行扫描，并返回注册的 Bean 定义。该方法不会注册注解配置处理器，而是将这个责任留给调用者。
+	 * 解释如下：
+	 * "Perform a scan within the specified base packages, returning the registered bean definitions."：
+	 * 在指定的基础包中执行扫描，即扫描这些包及其子包中的类文件，以查找与 Spring 相关的注解（例如 @Component、@Service、@Repository 等）标记的类。扫描的结果将会得到注册为 Bean 的定义。
+	 * "This method does not register an annotation config processor"：
+	 * 这个方法不会注册注解配置处理器。注解配置处理器是负责解析和处理注解配置的组件，例如 @Configuration、@Bean、@ComponentScan 等。
+	 * 通常，在 Spring 中会有一个注解配置处理器负责处理这些注解，并将它们转换为相应的 Bean 定义。但是，这个方法并不包含这个处理器的注册过程。
+	 * "but rather leaves this up to the caller."：
+	 * 相反，这个方法将这个责任留给调用者。也就是说，调用者需要自己处理注解配置，包括注册注解配置处理器和执行相应的解析和处理过程。
+	 * 总结起来，这段话的意思是，该方法提供了执行扫描并返回注册的 Bean 定义的功能，但不包含具体的注解配置处理过程，这个过程需要由调用者自行处理。
+	 * 调用者需要负责注册注解配置处理器，并执行相应的解析和处理操作，以确保扫描到的注解配置能够正确地转换为相应的 Bean 定义。
+	 */
 	/**
 	 * Perform a scan within the specified base packages,
 	 * returning the registered bean definitions.
@@ -270,6 +284,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @param basePackages the packages to check for annotated classes
 	 * @return set of beans registered if any for tooling registration purposes (never {@code null})
 	 */
+
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		// 这里面的代码看起来很简单，但是他应该是处理了@ComponentScan注解里的所有属性
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
@@ -281,6 +296,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 		for (String basePackage : basePackages) {
 			// 包含过滤器的使用在此
+			// 根据名称 查询候选的Components，根据包路径，返回的是Bean定义信息集合，所以核心在此。
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 
 			for (BeanDefinition candidate : candidates) {
