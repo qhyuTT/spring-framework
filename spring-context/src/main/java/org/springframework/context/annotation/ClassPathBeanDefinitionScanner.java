@@ -271,11 +271,18 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @return set of beans registered if any for tooling registration purposes (never {@code null})
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
+		// 这里面的代码看起来很简单，但是他应该是处理了@ComponentScan注解里的所有属性
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
+
+		// 存储所有扫描并注册好的beanDefinitions，set集合
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
+		// 我加的，用于输出注释，源码中忽略。
 		AtomicInteger index = new AtomicInteger();
+
 		for (String basePackage : basePackages) {
+			// 包含过滤器的使用在此
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
+
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
@@ -297,6 +304,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}
+
 		}
 		System.out.println("当前加载的所有beanName的个数为:"+ index);
 		return beanDefinitions;

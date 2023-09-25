@@ -19,11 +19,7 @@ public class InsertionSort {
 	}
 
 	private static void insertionSort(int[] arrays) {
-		// 先把手定义出来
-		String[] hand = new String[arrays.length];
-		//首先把arrays当作一副牌，我得一张张得拿，所以先循环
-		for (int item = 0; item < arrays.length; item++) {
-		}
+		//咋说呢，不想写算法 ^-^
 
 	}
 }
