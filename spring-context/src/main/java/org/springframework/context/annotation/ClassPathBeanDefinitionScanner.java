@@ -304,12 +304,15 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				candidate.setScope(scopeMetadata.getScopeName());
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 				if (candidate instanceof AbstractBeanDefinition) {
+					// lazyinit在这里,getBean之后才用
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
 				if (candidate instanceof AnnotatedBeanDefinition) {
+					// 设置beanDefinition的属性信息，后续用
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
 				if (checkCandidate(beanName, candidate)) {
+					// 组装holder
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
@@ -317,6 +320,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 					// 在这里就把我们需要spring管理的类组装BeanDefinition，放到了(BeanDefinitionRegistry)BeanFactory中
 					System.out.println("当前加载的beanName:"+beanName);
 					index.addAndGet(1);
+					//DefaultListableBeanFactory中的beanDefinitionMap中
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}

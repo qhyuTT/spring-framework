@@ -2,6 +2,7 @@ package com.qhyu.cloud.aop;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
