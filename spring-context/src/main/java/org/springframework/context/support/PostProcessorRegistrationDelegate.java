@@ -263,20 +263,29 @@ final class PostProcessorRegistrationDelegate {
 		// list of all declined PRs involving changes to PostProcessorRegistrationDelegate
 		// to ensure that your proposal does not result in a breaking change:
 		// https://github.com/spring-projects/spring-framework/issues?q=PostProcessorRegistrationDelegate+is%3Aclosed+label%3A%22status%3A+declined%22
-
+		// 直接通过类型去获取所有的BeanPostProcessor的BeanNames，存在postProcessorNames数组中
 		String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
 
 		// Register BeanPostProcessorChecker that logs an info message when
 		// a bean is created during BeanPostProcessor instantiation, i.e. when
 		// a bean is not eligible for getting processed by all BeanPostProcessors.
+		// BeanPostProcessorChecker是一个自定义的BeanPostProcessor，它在BeanPostProcessor实例化期间检查并记录信息。
+		// 具体来说，当创建BeanPostProcessor期间创建了一个Bean（即一个Bean不符合所有BeanPostProcessor的处理条件）时，BeanPostProcessorChecker会记录一个信息日志。
+		// i.e. 即
+		// e.g. 例如
 		int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
 		beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
 
 		// Separate between BeanPostProcessors that implement PriorityOrdered,
 		// Ordered, and the rest.
+		// 将实现 PriorityOrdered、Ordered 和其他的 BeanPostProcessor 分开。
+		// 实现类PriorityOrdered的BeanPostProcessor
 		List<BeanPostProcessor> priorityOrderedPostProcessors = new ArrayList<>();
+		// 内部的BeanPostProcessor
 		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
+		// 实现类Ordered的BeanPostProcessor
 		List<String> orderedPostProcessorNames = new ArrayList<>();
+		// 没有实现Ordered的BeanPostProcessor
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
 		for (String ppName : postProcessorNames) {
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
