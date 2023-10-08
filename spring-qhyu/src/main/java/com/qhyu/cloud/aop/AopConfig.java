@@ -1,8 +1,12 @@
 package com.qhyu.cloud.aop;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.support.DelegatingMessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
@@ -38,4 +42,14 @@ public class AopConfig {
 	 * AspectJ是AOP的完美解决方案。SpringAOP致力于解决的是企业级开发中最普遍的AOP需求。
 	 * Spring AOP 的原理很简单，就是动态代理，它和 AspectJ 不一样，AspectJ 是直接修改掉你的字节码。
 	 */
+
+	@Bean
+	public MessageSource messageSource(){
+		// 国际化
+		ResourceBundleMessageSource delegateMessageSource = new ResourceBundleMessageSource();
+		delegateMessageSource.setBasename("format"); // 设置委派消息源的基本名称
+		DelegatingMessageSource delegatingMessageSource = new DelegatingMessageSource();
+		delegatingMessageSource.setParentMessageSource(delegateMessageSource);
+		return delegatingMessageSource;
+	}
 }

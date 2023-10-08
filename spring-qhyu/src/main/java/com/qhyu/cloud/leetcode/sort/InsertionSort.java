@@ -1,5 +1,7 @@
 package com.qhyu.cloud.leetcode.sort;
 
+import java.util.Arrays;
+
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
  * Title：InsertionSort <br>
@@ -14,12 +16,25 @@ package com.qhyu.cloud.leetcode.sort;
 public class InsertionSort {
 	// 插入排序算法，类似打扑克牌
 	public static void main(String[] args) {
-		int[] arrays = {1, 3, 9, 4, 2, 7};
+		int[] arrays = {5, 2, 4, 6, 1, 3};
 		insertionSort(arrays);
+		binaryInsertionSort(arrays);
 	}
 
-	private static void insertionSort(int[] arrays) {
-		//咋说呢，不想写算法 ^-^
+	public static void insertionSort(int[] arrays) {
+		for (int i = 1; i < arrays.length; i++) {
+			// 为了保证空间复杂度不变，我需要利用arrays这个数组
+			int temp = arrays[i];
+			int j;
+			for (j = i - 1; j >= 0 && temp < arrays[j]; j--) {
+				arrays[j + 1] = arrays[j];
+			}
+			arrays[j + 1] = temp;
+		}
+		System.out.println(Arrays.toString(arrays));
+	}
+
+	public static void binaryInsertionSort(int[] arrays) {
 
 	}
 }

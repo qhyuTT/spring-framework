@@ -16,6 +16,8 @@
 
 package org.springframework.core.metrics;
 
+import org.springframework.core.metrics.jfr.FlightRecorderApplicationStartup;
+
 /**
  * Instruments the application startup phase using {@link StartupStep steps}.
  * <p>The core container and its infrastructure components can use the {@code ApplicationStartup}
