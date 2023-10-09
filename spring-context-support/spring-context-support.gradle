@@ -9,7 +9,7 @@ dependencies {
 	optional("javax.activation:javax.activation-api")
 	optional("javax.mail:javax.mail-api")
 	optional("javax.cache:cache-api")
-	optional("com.github.ben-manes.caffeine:caffeine")
+	testImplementation ("com.github.ben-manes.caffeine:caffeine")
 	optional("net.sf.ehcache:ehcache")
 	optional("org.quartz-scheduler:quartz")
 	optional("org.codehaus.fabric3.api:commonj")
