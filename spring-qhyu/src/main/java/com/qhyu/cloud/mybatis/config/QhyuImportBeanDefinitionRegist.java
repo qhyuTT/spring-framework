@@ -31,6 +31,7 @@ public class QhyuImportBeanDefinitionRegist implements ImportBeanDefinitionRegis
 		String path = (String) annotationAttributes.get("value");
 		System.out.println("我的扫描路径为:"+path);
 		QhyuConfigSanner qhyuConfigSanner = new QhyuConfigSanner(registry);
+		// 添加了一个包含过滤器，所以可以让其接口不被跳过
 		qhyuConfigSanner.addIncludeFilter(new TypeFilter() {
 			@Override
 			public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) throws IOException {

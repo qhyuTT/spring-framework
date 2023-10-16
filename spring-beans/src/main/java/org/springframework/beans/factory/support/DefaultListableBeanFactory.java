@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -555,6 +556,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	private String[] doGetBeanNamesForType(ResolvableType type, boolean includeNonSingletons, boolean allowEagerInit) {
+
 		List<String> result = new ArrayList<>();
 
 		// Check all bean definitions.
@@ -580,7 +582,39 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						else {
 							if (includeNonSingletons || isNonLazyDecorated ||
 									(allowFactoryBeanInit && isSingleton(beanName, mbd, dbd))) {
-								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit);
+								//测试FactoryBean的初始化时机和条件-beanName:【mapperFactoryBean】type【com.qhyu.cloud.mybatis.mapper.QhyuTestMapper】 allowFactoryBeanInit=true
+								//测试FactoryBean的初始化时机和条件-beanName:【PrintlnMethodArgs】type【com.qhyu.cloud.mybatis.mapper.QhyuTestMapper】 allowFactoryBeanInit=true
+								//测试FactoryBean的初始化时机和条件-beanName:【mapperFactoryBean】type【com.qhyu.cloud.mybatis.mapper.GetUserNameMapper】 allowFactoryBeanInit=true
+								//测试FactoryBean的初始化时机和条件-beanName:【PrintlnMethodArgs】type【com.qhyu.cloud.mybatis.mapper.GetUserNameMapper】 allowFactoryBeanInit=true
+								// 我的猜想是什么，是因为扫描了QhyuTestMapper GetUserNameMapper 这两个接口，需要mapperFactoryBean和PrintlnMethodArgs来创建代理对象
+								Object mapperFactoryBean = getSingleton("mapperFactoryBean");
+								Object validateFactoryBean = getSingleton("validateFactoryBean");
+								if (mapperFactoryBean == null){
+									System.out.println("不不不存在mapperFactoryBean");
+								}else {
+									System.out.println("确实存在mapperFactoryBean");
+								}
+								if (validateFactoryBean == null){
+									System.out.println("不不不存在validateFactoryBean");
+								}else {
+									System.out.println("确实存在validateFactoryBean");
+								}
+								System.out.println("DefaultListableBeanFactory-CG590-Start");
+								System.out.println("测试FactoryBean的初始化时机和条件-beanName:【"+beanName+"】"+"type【"+type.getType().getTypeName()+"】 allowFactoryBeanInit="+allowFactoryBeanInit);
+ 								matchFound = isTypeMatch(beanName, type, allowFactoryBeanInit);
+								mapperFactoryBean = getSingleton("mapperFactoryBean");
+								validateFactoryBean = getSingleton("validateFactoryBean");
+								if (mapperFactoryBean == null){
+									System.out.println("不不不存在mapperFactoryBean");
+								}else {
+									System.out.println("确实存在mapperFactoryBean");
+								}
+								if (validateFactoryBean == null){
+									System.out.println("不不不存在validateFactoryBean");
+								}else {
+									System.out.println("确实存在validateFactoryBean");
+								}
+								System.out.println("DefaultListableBeanFactory-CG593-End");
 							}
 							if (!matchFound) {
 								// In case of FactoryBean, try to match FactoryBean instance itself next.
@@ -988,7 +1022,6 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
-
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
 
@@ -1029,6 +1062,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							"] with [" + beanDefinition + "]");
 				}
 			}
+			System.out.println("ClassPath加载的beanName:"+beanName);
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
@@ -1045,6 +1079,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			else {
 				// Still in startup registration phase
+				System.out.println("ClassPath加载的beanName:"+beanName);
 				this.beanDefinitionMap.put(beanName, beanDefinition);
 				this.beanDefinitionNames.add(beanName);
 				removeManualSingletonName(beanName);
@@ -1356,6 +1391,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 
 			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
+			System.out.println("DefaultListableBeanFactory-CG1368==>Start");
+			System.out.println(beanName+"需要依赖注入的集合"+matchingBeans.toString());
+			System.out.println("DefaultListableBeanFactory-CG1368==>End");
 			if (matchingBeans.isEmpty()) {
 				if (isRequired(descriptor)) {
 					raiseNoMatchingBeanFound(type, descriptor.getResolvableType(), descriptor);
@@ -1559,7 +1597,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 */
 	protected Map<String, Object> findAutowireCandidates(
 			@Nullable String beanName, Class<?> requiredType, DependencyDescriptor descriptor) {
-
+		System.out.println("当前BeanName="+beanName+" isEager(是否急切)="+descriptor.isEager()+" 要求得类型="+requiredType.getName());
+		// 这里传入了true，也就是descriptor的信息里面传入的
 		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = CollectionUtils.newLinkedHashMap(candidateNames.length);

@@ -291,8 +291,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 
 		// 存储所有扫描并注册好的beanDefinitions，set集合
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
-		// 我加的，用于输出注释，源码中忽略。
-		AtomicInteger index = new AtomicInteger();
+
 
 		for (String basePackage : basePackages) {
 			// 包含过滤器的使用在此
@@ -318,15 +317,15 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
 					// 在这里就把我们需要spring管理的类组装BeanDefinition，放到了(BeanDefinitionRegistry)BeanFactory中
-					System.out.println("当前加载的beanName:"+beanName);
-					index.addAndGet(1);
+					//System.out.println("ClassPath加载的beanName:"+beanName);
 					//DefaultListableBeanFactory中的beanDefinitionMap中
 					registerBeanDefinition(definitionHolder, this.registry);
+
 				}
 			}
 
 		}
-		System.out.println("当前加载的所有beanName的个数为:"+ index);
+
 		return beanDefinitions;
 	}
 

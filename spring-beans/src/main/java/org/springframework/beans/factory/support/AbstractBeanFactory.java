@@ -255,6 +255,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Eagerly check singleton cache for manually registered singletons.
 		// ！！！！！！！！！！！！！！！！！三级缓存的核心
 		Object sharedInstance = getSingleton(beanName);
+		if (sharedInstance == null){
+			System.out.println("【实例化】singletonObjects中不存在BeanName==>"+beanName);
+		}
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -542,6 +545,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		// Check manually registered singletons.
 		Object beanInstance = getSingleton(beanName, false);
+		System.out.println("测试FactoryBean的初始化时机和条件,当前BeanName:"+beanName);
+		System.out.println("测试FactoryBean的初始化时机和条件,当前name:"+name);
 		if (beanInstance != null && beanInstance.getClass() != NullBean.class) {
 			if (beanInstance instanceof FactoryBean) {
 				if (!isFactoryDereference) {
@@ -581,6 +586,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			return false;
 		}
 		else if (containsSingleton(beanName) && !containsBeanDefinition(beanName)) {
+			System.out.println("测试FactoryBean的初始化时机和条件,containsSingleton(beanName)"+containsSingleton(beanName));
+			System.out.println("测试FactoryBean的初始化时机和条件,containsBeanDefinition(beanName)"+containsBeanDefinition(beanName));
 			// null instance registered
 			return false;
 		}
@@ -1709,6 +1716,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 		if (allowInit && mbd.isSingleton()) {
 			try {
+				System.out.println("AbstractBeanFactory-CG1719-获取FactoryBean:"+FACTORY_BEAN_PREFIX + beanName);
 				FactoryBean<?> factoryBean = doGetBean(FACTORY_BEAN_PREFIX + beanName, FactoryBean.class, null, true);
 				Class<?> objectType = getTypeForFactoryBean(factoryBean);
 				return (objectType != null ? ResolvableType.forClass(objectType) : ResolvableType.NONE);

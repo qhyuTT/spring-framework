@@ -30,8 +30,11 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.beans.support.ResourceEditorRegistrar;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -568,11 +571,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// BeanDefinitionRegistryPostProcessor是可以在postProcessBeanDefinitionRegistry中去拿到bean的定义信息进行修改
 				invokeBeanFactoryPostProcessors(beanFactory);
 
+				//preRegisterBeanPostProcessors(beanFactory);
 				// Register bean processors that intercept bean creation.
 				// 可以实现BeanDefinitionRegistryPostProcessor接口来动态生成bean
 				// registerBeanPostProcessors会注册所有的BeanpostProcessor，将所有实现了BeanPostProcessor的类加载到BeanFactory中。
 				// 注册拦截bean创建的Bean处理器，这里只是注册，真正调用是在getbean的时候
 				registerBeanPostProcessors(beanFactory);
+
+				// 我想知道FactoryBean是不是在注册BeanPostProcessors就已经完成了实例化
+				// 这个逻辑是我新增的
+				//validateFacotryBean(beanFactory);
+
 				beanPostProcess.end();
 
 				// Initialize message source for this context.
@@ -624,6 +633,45 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				contextRefresh.end();
 			}
 		}
+	}
+
+	/**
+	 * Title: 注册BeanPostProcessor之前容器中有哪些bean了
+	 * @author  candidate
+	 * @date  2023/10/12 15:12
+	 * @since  2023/10/12
+	 * @param beanFactory ConfigurableListableBeanFactory
+	 */
+	private void preRegisterBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		for (String singletonName : beanFactory.getSingletonNames()) {
+			System.out.println("preRegisterBeanPostProcessors："+ singletonName);
+		}
+	}
+
+	/**
+	 * Title: 验证我的猜想是否正确，我要知道FactoryBean的实例化时机
+	 * @author  candidate
+	 * @date  2023/10/11 15:08
+	 * @since  2023/10/11
+	 * @param beanFactory ConfigurableListableBeanFactory
+	 */
+	private void validateFacotryBean(ConfigurableListableBeanFactory beanFactory) {
+		String[] singletonNames = beanFactory.getSingletonNames();
+		String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
+		for (String beanDefinitionName : beanDefinitionNames) {
+			if(beanFactory.isFactoryBean(beanDefinitionName)){
+				System.out.println("当前Bean是FactoryBean:"+beanDefinitionName);
+				// 特殊：PrintlnMethodArgs接口，这个接口是实现的类似mybatis的@mapper接口，
+				// 使用 FactoryBean的机制动态生成接口的代理对象。这种是和普通的bean一个生命周期，虽然他也是FactoryBean
+ 				for (String singletonName : singletonNames) {
+					System.out.println("afterRegisterBeanPostProcessors："+ singletonName);
+					if (beanDefinitionName.contains(singletonName)){
+						System.out.println("FactoryBean已初始化完成"+singletonName);
+					}
+				}
+			}
+		}
+
 	}
 
 	/**
