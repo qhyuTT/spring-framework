@@ -571,7 +571,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// BeanDefinitionRegistryPostProcessor是可以在postProcessBeanDefinitionRegistry中去拿到bean的定义信息进行修改
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				//preRegisterBeanPostProcessors(beanFactory);
+				preRegisterBeanPostProcessors(beanFactory);
+
 				// Register bean processors that intercept bean creation.
 				// 可以实现BeanDefinitionRegistryPostProcessor接口来动态生成bean
 				// registerBeanPostProcessors会注册所有的BeanpostProcessor，将所有实现了BeanPostProcessor的类加载到BeanFactory中。
@@ -580,7 +581,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// 我想知道FactoryBean是不是在注册BeanPostProcessors就已经完成了实例化
 				// 这个逻辑是我新增的
-				//validateFacotryBean(beanFactory);
+				afterRegisterBeanPostProcessors(beanFactory);
 
 				beanPostProcess.end();
 
@@ -655,7 +656,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @since  2023/10/11
 	 * @param beanFactory ConfigurableListableBeanFactory
 	 */
-	private void validateFacotryBean(ConfigurableListableBeanFactory beanFactory) {
+	private void afterRegisterBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
 		String[] singletonNames = beanFactory.getSingletonNames();
 		String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
 		for (String beanDefinitionName : beanDefinitionNames) {

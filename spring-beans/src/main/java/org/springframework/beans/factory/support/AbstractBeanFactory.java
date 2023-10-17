@@ -255,9 +255,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Eagerly check singleton cache for manually registered singletons.
 		// ！！！！！！！！！！！！！！！！！三级缓存的核心
 		Object sharedInstance = getSingleton(beanName);
-		if (sharedInstance == null){
-			System.out.println("【实例化】singletonObjects中不存在BeanName==>"+beanName);
-		}
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -613,6 +610,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 
 		// Attempt to predict the bean type
+		// 预测类型
 		Class<?> predictedType = null;
 
 		// We're looking for a regular reference but we're a factory bean that has

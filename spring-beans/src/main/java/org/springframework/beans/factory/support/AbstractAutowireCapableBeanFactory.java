@@ -879,6 +879,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	@Override
 	protected ResolvableType getTypeForFactoryBean(String beanName, RootBeanDefinition mbd, boolean allowInit) {
+		/***
+		 * 1、这个实现类尝试查询FactoryBean的范型参数元数据(如果存在，我们的都是T，未知类型：validateFactoryBean和mapperFactoryBean)来确定
+		 * 对象的类型。如果范型参数元数据不存在，也就是说FactoryBean被声明为原始类型(raw type)，
+		 * 则会在一个普通的FactoryBean实例上调用getObjectType方法进行检查，此时还没有应用bean属性。如果这个方法还没有返回类型，
+		 * 并且allowInit参数为true，那么会完全创建FactoryBean作为后备方案（通过委托给超类的实现）。
+		 * 2、这个快捷检查方法只适用于单例的FactoryBean。如果FactoryBean实例本身不是单例的，为了检查其暴露对象的类型，将完全创建FactoryBean。
+		 * 3、简而言之，这段描述解释了在Spring框架中用于创建FactoryBean的对象时，如何确定其对象类型的逻辑。首先，它尝试使用泛型参数元数据来确定类型。
+		 * 如果泛型参数元数据不可用，它会检查FactoryBean的getObjectType方法来获取类型信息。如果仍然无法确定类型，并且允许初始化（allowInit为true），
+		 * 则会完全创建FactoryBean实例来获取类型信息。这个逻辑只适用于单例的FactoryBean，对于非单例的FactoryBean，将会完全创建FactoryBean实例来确定暴露对象的类型。
+		 */
 		// Check if the bean definition itself has defined the type with an attribute
 		ResolvableType result = getTypeForFactoryBeanFromAttributes(mbd);
 		if (result != ResolvableType.NONE) {

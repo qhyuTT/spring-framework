@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * date 2023年 05月12日 11:36 <br>
  * @version v1.0 <br>
  */
-//@Configuration
+@Configuration
 @SuppressWarnings("serial")
 public class TargetSourceConfig extends AbstractAdvisorAutoProxyCreator {
 
