@@ -745,6 +745,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
+		// 设置BeanFactory的类加载器，我们知道BeanFactory需要加载类，也就需要类加载器
 		beanFactory.setBeanClassLoader(getClassLoader());
 		// 对spel的支持
 		if (!shouldIgnoreSpel) {

@@ -195,6 +195,18 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 *   执行，执行完后直接把本bean放入singletonObjects中即可，如果出现了循环依赖依赖了本bean，则另外的那个bean执行objectFactory提交
 	 *   得到一个AOP对象之后的对立对象（如果有aop的话。如果无需aop则直接得到一个原始对象）
 	 * 4、其实还有一个缓存，就是earlyProxyReferences，他用来记录某个原始对象是否经历了AOP
+	 * 2023-10-18 14点52分 再次回味
+	 * 为什么使用三级缓存？
+	 * 一级缓存singletonObjects：毫无疑问，存完整生命周期的bean
+	 * 二级缓存earlySingletonObjects: 三级缓存singletonFactories.getObject ==》AbstractAutowireCapableBeanFactory addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
+	 * 三级缓存singletonFactories: 提前曝光的ObjectFactory对象
+	 * 一帮面试官闲的无聊问这种存在争议的问题。
+	 * 存在争议的地方就是二级和三级缓存，确实可以使用两级缓存解决循环依赖
+	 * singletonFactories不要，也就是说二级缓存直接存对象，也就是不管他是不是需要代理，都直接走getEarlyBeanReference(beanName, mbd, bean)这个，然后放入二级缓存
+	 * earlySingletonObjects不要，也就是直接放ObjectFactory，这里会存在问题，就是每次getObject可能返回的不是一个对象
+	 * A class 中有B 和C ，BC中都有A的循环依赖，A放入三级缓存ObjectFactories,然后属性注入B，B中有A所以从三级缓存拿，C中也需要，所以可能不是一个对象。
+	 * 所以很明显singletonFactories不能单独存在，如果不存在，那么就只要earlySingletonObjects，相当于不管需不需要循环依赖，都会执行都直接走getEarlyBeanReference，效率低。
+	 * 这两个配合使用是一种妥协或者是优化
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {

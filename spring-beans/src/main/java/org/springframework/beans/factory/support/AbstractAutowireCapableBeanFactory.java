@@ -521,6 +521,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Prepare method overrides.
+		// 准备方法覆写，这里涉及到一个概念：MethodOverrides 他来自于bean定义中的<lookup-method /> 和 <replaced-method />
 		try {
 			mbdToUse.prepareMethodOverrides();
 		}
@@ -635,7 +636,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		/**
 		 * 即使没有循环依赖，也会将其添加到三级缓存中，而且是不得不添加到三级缓存中，因为到目前为止Spring也不能确定这个Bean有没有和别的bean
 		 * 产生循环依赖，因为这个方法在populateBean属性注入得方法前。
-		 *
 		 * 假设我们在这里直接使用二级缓存得话，那么意味着所有的Bean都要在这一步完成aop代理，这样做有必要？？
 		 * 当然是没有必要的，不仅没有必要，而且违背了Spring结合AOP跟Bean的生命周期设计!
 		 * Spring结合AOP跟Bean的生命周期本身就是通过AbstractAutoProxyCreator(AnnotationAwareAspectJAutoProxyCreator)这个后置处理器来完成的，在这个后置处理的
