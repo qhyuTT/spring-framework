@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
  * @author candidate <br>
  * @date 2023年 10月19日 14:05 <br>
  */
-@Service
+//@Service
 public class TestA {
 
-	@Autowired
+	public TestA(TestB testB) {
+		this.testB = testB;
+	}
+
 	TestB testB;
 }
