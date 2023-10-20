@@ -1,11 +1,11 @@
 package com.qhyu.cloud.aop;
 
-import com.qhyu.cloud.mybatis.annotation.QhyuSanner;
+import com.qhyu.cloud.datasource.DataConfig;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * date 2022年 06月28日 10:26 <br>
  * @version v1.0 <br>
  */
-@Component
+//@Component
 public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired

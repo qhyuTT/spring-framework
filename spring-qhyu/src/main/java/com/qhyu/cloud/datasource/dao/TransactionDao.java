@@ -18,7 +18,7 @@ import java.sql.PreparedStatement;
  * date 2022年 06月28日 10:27 <br>
  * @version v1.0 <br>
  */
-@Component
+//@Component
 public class TransactionDao {
 
 	@Autowired

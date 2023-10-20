@@ -2,6 +2,7 @@ package com.qhyu.cloud.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import javax.sql.DataSource;
  * date 2022年 06月24日 16:20 <br>
  * @version v1.0 <br>
  */
-@Component
+//@Configuration
 // 开启事务管理
 @EnableTransactionManagement
 public class DataConfig {
