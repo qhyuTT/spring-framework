@@ -1,9 +1,7 @@
 package com.qhyu.cloud.aop.aspect;
 
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Aspect
-@Order(99)
+//@Order(98)
 public class ThamNotVeryUsefulAspect {
 	@Pointcut("execution(* com.qhyu.cloud.aop.service.QhyuAspectService.*(..))") // the pointcut expression
 	private void thamAnyOldTransfer() {} // the pointcut signature
@@ -33,5 +31,25 @@ public class ThamNotVeryUsefulAspect {
 	@After("thamAnyOldTransfer()")
 	public void after(){
 		System.out.println("tham After 方法调用前");
+	}
+	
+	@AfterReturning("thamAnyOldTransfer()")
+	public void afterReturning(){
+		System.out.println("tham afterReturning");
+	}
+	
+	@AfterThrowing("thamAnyOldTransfer()")
+	public void afterThrowing(){
+		System.out.println("tham AfterThrowing");
+	}
+	
+	@Around("thamAnyOldTransfer()")
+	public Object  around(ProceedingJoinPoint pjp) throws Throwable{
+		// start stopwatch
+		System.out.println("tham around before");
+		Object retVal = pjp.proceed();
+		// stop stopwatch
+		System.out.println("tham around after");
+		return retVal;
 	}
 }

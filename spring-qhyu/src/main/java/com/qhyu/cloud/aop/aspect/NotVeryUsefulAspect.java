@@ -1,9 +1,7 @@
 package com.qhyu.cloud.aop.aspect;
 
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Aspect
-@Order(100)
+@Order(99)
 public class NotVeryUsefulAspect {
 
 	@Pointcut("execution(* com.qhyu.cloud.aop.service.QhyuAspectService.*(..))") // the pointcut expression
@@ -27,11 +25,31 @@ public class NotVeryUsefulAspect {
 
 	@Before("anyOldTransfer()")
 	public void before(){
-		System.out.println("Before 方法调用前");
+		System.out.println("not Before 方法调用前");
 	}
 
 	@After("anyOldTransfer()")
 	public void after(){
-		System.out.println("After 方法调用前");
+		System.out.println("not After 方法调用前");
+	}
+
+	@AfterReturning("anyOldTransfer()")
+	public void afterReturning(){
+		System.out.println("not afterReturning");
+	}
+
+	@AfterThrowing("anyOldTransfer()")
+	public void afterThrowing(){
+		System.out.println("not AfterThrowing");
+	}
+
+	@Around("anyOldTransfer()")
+	public Object  around(ProceedingJoinPoint pjp) throws Throwable{
+		// start stopwatch
+		System.out.println("not around before");
+		Object retVal = pjp.proceed();
+		// stop stopwatch
+		System.out.println("not around after");
+		return retVal;
 	}
 }
