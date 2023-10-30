@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<User> getUsers() {
+		System.out.println("UserServiceImpl返回所有用户信息");
 		return null;
 	}
 }

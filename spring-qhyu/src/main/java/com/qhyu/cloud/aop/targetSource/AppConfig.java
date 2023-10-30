@@ -32,6 +32,7 @@ public class AppConfig {
 
 	@Bean
 	public UserAccessControlInterceptor userAccessControlInterceptor() {
+		// 用户权限控制的拦截器
 		return new UserAccessControlInterceptor(Arrays.asList("admin", "manager"));
 	}
 

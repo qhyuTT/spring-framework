@@ -1,6 +1,7 @@
 package com.qhyu.cloud.circlarRefrence;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,12 +14,16 @@ import org.springframework.stereotype.Service;
  * @author candidate <br>
  * @date 2023年 10月19日 14:05 <br>
  */
-//@Service
+@Service
 public class TestA {
 
-	public TestA(TestB testB) {
+	public TestA(@Lazy TestB testB) {
 		this.testB = testB;
 	}
 
 	TestB testB;
+
+	public void testA(){
+		testB.testB();
+	}
 }

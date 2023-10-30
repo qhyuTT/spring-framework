@@ -592,6 +592,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 在这里就实例化了也就是new object()，调用了构造方法进行实例化，当中没有属性，也就是并没有初始化
 		if (instanceWrapper == null) {
 			// 没有什么特殊的处理,仅仅是通过无参构造函数实例化了这个bean
+			// 我初步怀疑，@Lazy在这里就创建好了targetSource代理对象
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		Object bean = instanceWrapper.getWrappedInstance();
@@ -646,6 +647,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Object exposedObject = bean;
 		try {
 			// 属性注入
+			// 有个问题，如果我注入的属性为@Lazy，注入的处理逻辑是什么
 			populateBean(beanName, mbd, instanceWrapper);
 			// 初始化的后续，postConstruct等等，同时AOP可能会在此处返回代理对象
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
@@ -1270,6 +1272,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+			// @Lazy跟踪，调用构造函数实例化对象
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 

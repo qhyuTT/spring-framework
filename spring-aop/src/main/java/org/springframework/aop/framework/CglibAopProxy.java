@@ -295,7 +295,10 @@ class CglibAopProxy implements AopProxy, Serializable {
 		Callback targetInterceptor;
 		if (exposeProxy) {
 			targetInterceptor = (isStatic ?
+					// 静态的TargetSource每次进行AOP拦截时，调用的都是同一个target目标对象
 					new StaticUnadvisedExposedInterceptor(this.advised.getTargetSource().getTarget()) :
+					// 动态TargetSource每次进行AOP拦截时，都是通过Target.getTarget获取到对象后，再调用目标方法。
+					// 同时，调用完成之后回去releaseTarget释放目标对象
 					new DynamicUnadvisedExposedInterceptor(this.advised.getTargetSource()));
 		}
 		else {
