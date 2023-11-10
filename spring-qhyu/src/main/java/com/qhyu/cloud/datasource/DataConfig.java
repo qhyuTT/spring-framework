@@ -21,9 +21,9 @@ import javax.sql.DataSource;
  * date 2022年 06月24日 16:20 <br>
  * @version v1.0 <br>
  */
-//@Configuration
+@Configuration
 // 开启事务管理
-@EnableTransactionManagement
+@EnableTransactionManagement()
 public class DataConfig {
 
 	@Bean

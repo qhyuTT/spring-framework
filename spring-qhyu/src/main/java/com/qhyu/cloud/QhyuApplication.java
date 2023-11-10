@@ -19,10 +19,10 @@ public class QhyuApplication {
 		//test(annotationConfigApplicationContext);
 		//aspectTest(annotationConfigApplicationContext);
 		//eventTest(annotationConfigApplicationContext);
-		//transactionTest(annotationConfigApplicationContext);
+		transactionTest(annotationConfigApplicationContext);
 		//targetSource(annotationConfigApplicationContext);
 
-		circularDependency(annotationConfigApplicationContext);
+		//circularDependency(annotationConfigApplicationContext);
 
 	}
 
@@ -85,7 +85,8 @@ public class QhyuApplication {
 		// 事务回滚了吗，测试事务和aop的时候使用
 		TransactionService bean2 = annotationConfigApplicationContext.getBean(TransactionService.class);
 		bean2.doQuery("0008cce0-3c92-45ea-957f-4f6dd568a3e2");
-		bean2.doUpdate("0008cce0-3c92-45ea-957f-4f6dd568a3e2",1);
+		bean2.doUpdate("0008cce0-3c92-45ea-957f-4f6dd568a3e2");
+		bean2.doQuery("0008cce0-3c92-45ea-957f-4f6dd568a3e2");
 	}
 
 	/**

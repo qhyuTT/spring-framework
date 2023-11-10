@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * date 2022年 06月28日 10:26 <br>
  * @version v1.0 <br>
  */
-//@Component
+@Component
 public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
@@ -29,8 +29,8 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
 	@Override
-	public void doUpdate(String id,int flag) {
-		int i = transactionDao.UserUpdate(id, flag);
+	public void doUpdate(String id) {
+		int i = transactionDao.UserUpdate(id);
 		System.out.println("更新用户表信息"+i+"条");
 	}
 }

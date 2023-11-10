@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * date 2022年 06月23日 14:19 <br>
  * @version v1.0 <br>
  */
-@Component
+//@Component
 @Aspect
 @Order(99)
 public class NotVeryUsefulAspect {

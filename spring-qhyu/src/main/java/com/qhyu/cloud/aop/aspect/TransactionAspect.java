@@ -19,9 +19,10 @@ import org.springframework.stereotype.Component;
  * @version v1.0 <br>
  */
 @Aspect
-//@Component
-//@Order(value = Ordered.HIGHEST_PRECEDENCE+1)
+@Component
+@Order(value = Ordered.HIGHEST_PRECEDENCE+1)
 // 用来测试事务和aop同时存在的异常情况
+//TransactionAttributeSource
 public class TransactionAspect {
 
 	@Pointcut("execution(* com.qhyu.cloud.datasource.service.TransactionService.*(..))") // the pointcut expression
@@ -41,14 +42,14 @@ public class TransactionAspect {
 	@Around("transactionLogInfo()")
 	public Object around(ProceedingJoinPoint pjp){
 		Object proceed = null;
-		System.out.println("调用目标方法前:@Around");
+		System.out.println("TransactionAspect调用目标方法前:@Around");
 		try {
 			// aop拦截器
 			 proceed = pjp.proceed();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-		System.out.println("调用目标方法后:@Around");
+		System.out.println("TransactionAspect调用目标方法后:@Around");
 		return proceed;
 	}
 }

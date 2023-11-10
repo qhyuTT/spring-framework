@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
+import java.util.Map;
 
 /**
  * All rights Reserved, Designed By http://xnky.travelsky.net/ <br>
@@ -18,7 +19,7 @@ import java.sql.PreparedStatement;
  * date 2022年 06月28日 10:27 <br>
  * @version v1.0 <br>
  */
-//@Component
+@Component
 public class TransactionDao {
 
 	@Autowired
@@ -32,7 +33,12 @@ public class TransactionDao {
 
 
 	@SuppressWarnings({"divzero"})
-	public int UserUpdate(String id,int flag) throws RuntimeException{
+	public int UserUpdate(String id) throws RuntimeException{
+		Map<String, Object> resultMap = jdbcTemplate.queryForMap("select * from skyworth_user where id = ?", id);
+		int flag = 0;
+		if (resultMap.get("is_first_login") == Integer.valueOf("0")){
+			flag = 1;
+		}
 		int update = jdbcTemplate.update("update skyworth_user set is_first_login = ? where id ='0008cce0-3c92-45ea-957f-4f6dd568a3e2' ", flag);
 		int i=1/0;
 		return update;

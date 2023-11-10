@@ -338,6 +338,14 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
+		/**
+		 * ConfigurationClassParser`类才是负责解析@Configuration注解的配置类。
+		 * `ConfigurationClassBeanDefinitionReader`类是`ConfigurationClassParser`的一个辅助类，用于将解析后的配置类信息转化为BeanDefinition对象并注册到Spring容器中。
+		 * `ConfigurationClassParser`类的主要职责是扫描和解析带有@Configuration注解的配置类，它会解析类中的各种注解、方法和字段，以确定要创建和配置的bean。
+		 *  它处理@Configuration注解、@Bean注解、@ComponentScan注解、@Import注解等，并根据这些注解生成相应的BeanDefinition对象。
+		 *  一旦`ConfigurationClassParser`解析完成配置类，它会将解析得到的BeanDefinition对象传递给`ConfigurationClassBeanDefinitionReader`，后者负责将这些BeanDefinition对象注册到Spring容器中。
+		 * 因此，`ConfigurationClassParser`和`ConfigurationClassBeanDefinitionReader`两者共同工作，一个负责解析和处理@Configuration注解的配置类，另一个负责将解析结果转化为BeanDefinition并注册到容器中。
+		 **/
 
 		// 这是候选人Set，去重
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);

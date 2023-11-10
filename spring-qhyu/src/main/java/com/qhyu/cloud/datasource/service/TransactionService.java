@@ -14,5 +14,5 @@ public interface TransactionService {
 
 	void doQuery(String id);
 
-	void doUpdate(String id,int flag);
+	void doUpdate(String id);
 }
